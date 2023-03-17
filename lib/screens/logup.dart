@@ -5,6 +5,7 @@ import 'package:learn/screens/login.dart';
 import '../reusable_widgets/reusable_widget.dart';
 import '../ultils/colors_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class LogupPage extends StatefulWidget {
   const LogupPage({super.key});
@@ -35,7 +36,7 @@ class _LogupPageState extends State<LogupPage> {
         listMail.add(map['email']);
       });
     });
-    print(listMail);
+    // print(listMail);
   }
 
   sginUUp() async {
@@ -48,19 +49,49 @@ class _LogupPageState extends State<LogupPage> {
             email: _emailTextContoller.text,
             password: _passwordTextContoller.text,
           );
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            animType: AnimType.scale,
+            title: 'Dialog Title',
+            desc: 'Account create with success.',
+            btnOkOnPress: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => LoginPage()));
+            },
+          )..show();
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
-            print('The password provided is too weak.');
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              animType: AnimType.scale,
+              title: 'Dialog Title',
+              desc: 'The password provided is too weak.',
+              btnOkOnPress: () {},
+            )..show();
           } else if (e.code == 'email-already-in-use') {
-            print('The account already exists for that email.');
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              animType: AnimType.scale,
+              title: 'Dialog Title',
+              desc: 'The account already exists for that email.',
+              btnOkOnPress: () {},
+            )..show();
           }
         } catch (e) {
           print(e);
         }
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => homePage()));
       } else {
-        print('The string  does not exist in the list.');
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.scale,
+          title: 'Dialog Title',
+          desc: 'The email  does not exist in departement dataBase.',
+          btnOkOnPress: () {},
+        )..show();
       }
     }
   }
@@ -231,7 +262,7 @@ class _LogupPageState extends State<LogupPage> {
                   height: 20,
                 ),
                 signInSignUpButton(context, false, () {
-                   sginUUp();
+                  sginUUp();
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => LoginPage()));
                 }),
