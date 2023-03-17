@@ -49,6 +49,10 @@ class _LogupPageState extends State<LogupPage> {
             email: _emailTextContoller.text,
             password: _passwordTextContoller.text,
           );
+          User? user = FirebaseAuth.instance.currentUser;
+          if (user != null && !user.emailVerified) {
+            await user.sendEmailVerification();
+          }
           AwesomeDialog(
             context: context,
             dialogType: DialogType.success,
@@ -67,7 +71,7 @@ class _LogupPageState extends State<LogupPage> {
               context: context,
               dialogType: DialogType.error,
               animType: AnimType.scale,
-              title: 'Dialog Title',
+              title: 'Error',
               desc: 'The password provided is too weak.',
               btnOkOnPress: () {},
             )..show();
@@ -89,7 +93,7 @@ class _LogupPageState extends State<LogupPage> {
           context: context,
           dialogType: DialogType.error,
           animType: AnimType.scale,
-          title: 'Dialog Title',
+          title: 'Error',
           desc: 'The email  does not exist in departement dataBase.',
           btnOkOnPress: () {},
         )..show();
@@ -244,7 +248,7 @@ class _LogupPageState extends State<LogupPage> {
                         Icons.lock_outline,
                         color: Colors.white70,
                       ),
-                      labelText: "Enter Email",
+                      labelText: "Enter Password",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
                       filled: true,
