@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
-
 import 'package:flutter/material.dart';
 import 'package:learn/reusable_widgets/reusable_widget.dart';
 import 'package:learn/screens/logup.dart';
 import 'package:learn/ultils/colors_utils.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,17 +49,17 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
-            signInSignUpButton(context, true, () {}),
-             SizedBox(
+            signInSignUpButton(context, true, () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => homePage()));
+            }),
+            SizedBox(
               height: 20,
             ),
-            signUpOption( context),
+            signUpOption(context),
           ],
         ),
       ),
     );
   }
 }
-
-
-

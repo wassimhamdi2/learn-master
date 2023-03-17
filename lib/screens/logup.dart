@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/home.dart';
+import 'package:learn/screens/login.dart';
 import '../reusable_widgets/reusable_widget.dart';
 import '../ultils/colors_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +15,7 @@ class LogupPage extends StatefulWidget {
 
 class _LogupPageState extends State<LogupPage> {
   List mail = [];
-  List listMail = [];
+  List<String> listMail = [];
   CollectionReference Emails =
       FirebaseFirestore.instance.collection("email validation");
   EmailVerife() async {
@@ -33,14 +35,33 @@ class _LogupPageState extends State<LogupPage> {
         listMail.add(map['email']);
       });
     });
-    // print(listMail);
+    print(listMail);
   }
 
   sginUUp() async {
     var formdata = formKey.currentState;
     if (formdata!.validate()) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => homePage()));
+      if (listMail.contains(_emailTextContoller.text)) {
+        try {
+          final credential =
+              await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _emailTextContoller.text,
+            password: _passwordTextContoller.text,
+          );
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'weak-password') {
+            print('The password provided is too weak.');
+          } else if (e.code == 'email-already-in-use') {
+            print('The account already exists for that email.');
+          }
+        } catch (e) {
+          print(e);
+        }
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => homePage()));
+      } else {
+        print('The string  does not exist in the list.');
+      }
     }
   }
 
@@ -98,7 +119,9 @@ class _LogupPageState extends State<LogupPage> {
                     cursorColor: Colors.white,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      errorStyle: TextStyle( color: Colors.white54,),
+                      errorStyle: TextStyle(
+                        color: Colors.white54,
+                      ),
                       // ignore: prefer_const_constructors
                       prefixIcon: Icon(
                         Icons.person_outline,
@@ -139,7 +162,9 @@ class _LogupPageState extends State<LogupPage> {
                     cursorColor: Colors.white,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      errorStyle: TextStyle( color: Colors.white54,),
+                      errorStyle: TextStyle(
+                        color: Colors.white54,
+                      ),
                       // ignore: prefer_const_constructors
                       prefixIcon: Icon(
                         Icons.mail,
@@ -166,20 +191,22 @@ class _LogupPageState extends State<LogupPage> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty ||
-                          !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])(?=.{8,})')
+                          !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})')
                               .hasMatch(value)) {
                         return "Enter hard Password";
                       } else {
                         return null;
                       }
-                    },        
+                    },
                     controller: _passwordTextContoller,
                     obscureText: true,
                     enableSuggestions: !true,
                     cursorColor: Colors.white,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      errorStyle: TextStyle( color: Colors.white54,),
+                      errorStyle: TextStyle(
+                        color: Colors.white54,
+                      ),
                       // ignore: prefer_const_constructors
                       prefixIcon: Icon(
                         Icons.lock_outline,
@@ -204,9 +231,9 @@ class _LogupPageState extends State<LogupPage> {
                   height: 20,
                 ),
                 signInSignUpButton(context, false, () {
-                  sginUUp();
+                   sginUUp();
                   // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => homePage()));
+                  //     MaterialPageRoute(builder: (context) => LoginPage()));
                 }),
               ],
             ),
