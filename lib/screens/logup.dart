@@ -53,11 +53,12 @@ class _LogupPageState extends State<LogupPage> {
             context: context,
             dialogType: DialogType.success,
             animType: AnimType.scale,
-            title: 'Dialog Title',
-            desc: 'Account create with success.',
+            title: 'Success',
+            desc:
+                'Account create with success.Go to your mail and validate it .',
             btnOkOnPress: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => LoginPage()));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
             },
           )..show();
         } on FirebaseAuthException catch (e) {
