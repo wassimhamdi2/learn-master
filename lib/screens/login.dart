@@ -36,8 +36,7 @@ class _LoginPageState extends State<LoginPage> {
             animType: AnimType.scale,
             title: 'Error',
             desc: 'Sorry your email not verified.',
-            btnOkOnPress: () {
-              
+            btnOkOnPress: () {    
             },
           )..show();
         } else {
