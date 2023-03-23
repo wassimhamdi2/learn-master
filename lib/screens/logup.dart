@@ -15,10 +15,35 @@ class LogupPage extends StatefulWidget {
 }
 
 class _LogupPageState extends State<LogupPage> {
+  String rrole = "";
+  List Role = [];
+  List<String> FinalRole = [];
   List mail = [];
   List<String> listMail = [];
   CollectionReference Emails =
       FirebaseFirestore.instance.collection("email validation");
+  GetRole() async {
+    Emails.where("email", isEqualTo: _emailTextContoller.text).get().then((value) {
+      value.docs.forEach((element) {
+        print(element.data());
+        setState(() {
+          Role.add(element.data());
+        });
+      });
+      Role.forEach((map) {
+        setState(() { FinalRole.add(map['role']); });
+      });
+      if (FinalRole != []){
+        FinalRole.forEach((element){
+      rrole = element;
+      print("im $rrole");
+      });
+      }
+    });
+    // print("===================");
+    // print(rrole);
+  }
+
   EmailVerife() async {
     QuerySnapshot querySnapshot = await Emails.get();
     List<QueryDocumentSnapshot> listdocs = querySnapshot.docs;
@@ -44,6 +69,8 @@ class _LogupPageState extends State<LogupPage> {
     if (formdata!.validate()) {
       if (listMail.contains(_emailTextContoller.text)) {
         try {
+          final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+          //add auth for user
           final credential =
               await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: _emailTextContoller.text,
@@ -53,6 +80,18 @@ class _LogupPageState extends State<LogupPage> {
           if (user != null && !user.emailVerified) {
             await user.sendEmailVerification();
           }
+          // adding user in our database
+          await _firestore.collection("users").doc(credential.user!.uid).set({
+            "username": _userNameTextContoller.text,
+            "uid": credential.user!.uid,
+            // "photoUrl": photoUrl,
+            "email": _emailTextContoller.text,
+            // "bio": bio,
+            "followers": [],
+            "following": [],
+            "role":rrole
+          });
+
           AwesomeDialog(
             context: context,
             dialogType: DialogType.success,
@@ -268,6 +307,7 @@ class _LogupPageState extends State<LogupPage> {
                 ),
                 signInSignUpButton(context, false, () {
                   sginUUp();
+                  GetRole();
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => LoginPage()));
                 }),
