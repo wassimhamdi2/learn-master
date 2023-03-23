@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/home.dart';
 import 'package:learn/screens/login.dart';
 
 import '../ultils/colors_utils.dart';
@@ -11,13 +14,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+User? user;
   @override
   void initState() {
+    user = FirebaseAuth.instance.currentUser;
     super.initState();
     Timer(
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage())));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    user!=null ? const homePage() : const LoginPage())));
   }
 
   @override
@@ -27,12 +35,11 @@ class _SplashScreenState extends State<SplashScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-         gradient: LinearGradient(colors: [
+            gradient: LinearGradient(colors: [
           hexStringToColor("CB2B93"),
           hexStringToColor("9546C4"),
           hexStringToColor("5E61F4"),
         ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-        
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
