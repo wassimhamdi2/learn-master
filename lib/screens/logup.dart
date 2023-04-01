@@ -87,8 +87,6 @@ class _LogupPageState extends State<LogupPage> {
             // "photoUrl": photoUrl,
             "email": _emailTextContoller.text,
             // "bio": bio,
-            "followers": [],
-            "following": [],
             "role":rrole
           });
 

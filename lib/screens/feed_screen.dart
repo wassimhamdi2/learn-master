@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/ultils/colors.dart';
 
 import '../ultils/colors_utils.dart';
 import 'login.dart';
@@ -18,7 +19,23 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.black),
+      appBar: AppBar(
+          backgroundColor: mobileBackgroundColor,
+          iconTheme: IconThemeData(color: Colors.purple),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () {
+                // Do something when the button is pressed
+              },
+            ),
+          ],
+          title: Image.asset(
+            'assets/img/Learn_me_c.png',
+            height: 50,
+            color: Colors.purple,
+          )),
       drawer: Drawer(
           child: Column(
         // ignore: prefer_const_literals_to_create_immutables
@@ -26,16 +43,17 @@ class _FeedScreenState extends State<FeedScreen> {
           Container(
             child: Center(
               child: Image.asset(
-                  "assets/img/learn.png",
-                  color: Colors.white,
-                ),
+                "assets/img/learn.png",
+                color: Colors.white,
+              ),
             ),
             height: screenHeight * 0.25,
-            decoration: BoxDecoration(gradient: LinearGradient(colors: [
-          hexStringToColor("CB2B93"),
-          hexStringToColor("9546C4"),
-          hexStringToColor("5E61F4"),
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+              hexStringToColor("CB2B93"),
+              hexStringToColor("9546C4"),
+              hexStringToColor("5E61F4"),
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
           ),
           ListTile(
             title: Text("cours"),
@@ -74,7 +92,7 @@ class _FeedScreenState extends State<FeedScreen> {
         ],
       )),
       body: Container(
-        child: Text("helosqdqsdqsddqsdqsdqsdqsdqsd"),
+        child: Text(""),
       ),
     );
   }
