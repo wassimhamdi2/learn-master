@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 hexStringToColor(String hexColor){
   hexColor = hexColor.toUpperCase().replaceAll("a", "");
   if (hexColor.length ==6 ){

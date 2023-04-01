@@ -1,26 +1,95 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:learn/screens/login.dart';
+import '../ultils/colors.dart';
+import '../ultils/global_variable.dart';
 
-class homePage extends StatefulWidget {
-  const homePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<homePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<homePage> {
+class _HomePageState extends State<HomePage> {
+  int _page = 0;
+  late PageController pageController; // for tabs animation
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      _page = page;
+    });
+  }
+
+  void navigationTapped(int page) {
+    //Animating Page
+    pageController.jumpToPage(page);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body:Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-            Navigator.push(context  ,MaterialPageRoute(builder: (context) => LoginPage()));
-          }, child: Text("Log Out"),
-        ),
-      ) ,
+    return Scaffold(
+      body: PageView(
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        children: homeScreenItems,
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: mobileBackgroundColor,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: (_page == 0) ? primaryColor : secondaryColor,
+            ),
+            label: '',
+            backgroundColor: primaryColor,
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.search,
+                color: (_page == 1) ? primaryColor : secondaryColor,
+              ),
+              label: '',
+              backgroundColor: primaryColor),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.add_circle,
+                color: (_page == 2) ? primaryColor : secondaryColor,
+              ),
+              label: '',
+              backgroundColor: primaryColor),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.favorite,
+              color: (_page == 3) ? primaryColor : secondaryColor,
+            ),
+            label: '',
+            backgroundColor: primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: (_page == 4) ? primaryColor : secondaryColor,
+            ),
+            label: '',
+            backgroundColor: primaryColor,
+          ),
+        ],
+        onTap: navigationTapped,
+        currentIndex: _page,
+      ),
     );
   }
 }

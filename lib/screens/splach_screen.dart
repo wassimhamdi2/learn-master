@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:learn/screens/home.dart';
+import 'package:learn/screens/Home.dart';
 import 'package:learn/screens/login.dart';
 
 import '../ultils/colors_utils.dart';
@@ -25,7 +25,7 @@ User? user;
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    user!=null ? const homePage() : const LoginPage())));
+                    user!=null ? const HomePage() : const LoginPage())));
   }
 
   @override

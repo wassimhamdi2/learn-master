@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:learn/reusable_widgets/reusable_widget.dart';
 import 'package:learn/screens/logup.dart';
 import 'package:learn/ultils/colors_utils.dart';
-import 'home.dart';
+import 'package:learn/screens/home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
           )..show();
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homePage()));
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
         print("sign in");
       } on FirebaseAuthException catch (e) {
