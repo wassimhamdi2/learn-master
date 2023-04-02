@@ -6,6 +6,7 @@ class User {
   final String photoUrl;
   final String username;
   final String bio;
+  final String role;
 
 
   const User({
@@ -14,6 +15,7 @@ class User {
     required this.photoUrl,
     required this.email,
     required this.bio,
+    required this.role,
   });
 
   static User fromDocument(DocumentSnapshot doc) {
@@ -23,6 +25,7 @@ class User {
       email: doc['email'],
       photoUrl: doc['photoUrl'],
       username: doc['username'],
+      role: doc['role'],
     );
   }
 }

@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../ultils/colors.dart';
 import '../ultils/global_variable.dart';
+
+final usersRef = FirebaseFirestore.instance.collection("users");
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
