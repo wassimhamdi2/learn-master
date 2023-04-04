@@ -63,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
               " Find Users",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white.withOpacity(0.6),
                   fontSize: 60.0,
                   fontWeight: FontWeight.w600,
                   fontStyle: FontStyle.italic),
@@ -96,7 +96,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple.shade500,
+      backgroundColor: Colors.blue.withOpacity(0.8),
       appBar: buildSeachField(),
       body:
           searchResultsFuture == null ? buildNoContent() : buildSeachResults(),
@@ -113,8 +113,8 @@ class UserResult extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 7),
       decoration: BoxDecoration(
-          color: Colors.purple.shade300,
-          borderRadius: BorderRadius.circular(30)),
+          color: Colors.white.withOpacity(0.25),
+          borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
           GestureDetector(
