@@ -273,10 +273,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     position.longitude,
   );
   Placemark placemark = placemarks.first;
-  String completeAddress = ' ${placemark.street} , ${placemark.locality} , ${placemark.administrativeArea} , ${placemark.country} , ${placemark.postalCode}';
- print(completeAddress);
  String formattedAddress = "${placemark.locality} , ${placemark.country}";
- captionControler.text=formattedAddress;
+ locationControler.text=formattedAddress;
   }
 
   @override
