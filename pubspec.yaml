@@ -44,6 +44,10 @@ dependencies:
   uuid: ^3.0.7
   firebase_storage: ^11.0.16
   cached_network_image: ^3.2.3
+  path_provider: ^2.0.14
+  image: ^3.0.2
+  geolocator: ^9.0.2
+  geocoding: ^2.0.1
 
 dev_dependencies:
   flutter_test:

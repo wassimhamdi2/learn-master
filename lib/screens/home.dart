@@ -1,19 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as UUser;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/Home.dart';
 import 'package:learn/screens/profile_screen.dart';
 import 'package:learn/screens/search_screen.dart';
-import 'package:learn/models/user.dart' ;
+import 'package:learn/models/user.dart';
 import '../ultils/colors.dart';
 import 'add_post_screen.dart';
 import 'feed_screen.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final user = UUser.FirebaseAuth.instance.currentUser;
- late User? currentUser = null;
+final Reference storageRef = FirebaseStorage.instance.ref();
+final postsRef = FirebaseFirestore.instance.collection("posts");
+final DateTime timestamp = DateTime.now();
+late User? currentUser = null;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -35,7 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getUser() async {
     final doc = await usersRef.doc(user!.uid).get();
-     currentUser = User.fromDocument(doc) ;
+    currentUser = User.fromDocument(doc);
   }
 
   @override
@@ -64,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           FeedScreen(),
           SearchScreen(),
-          AddPostScreen(currentUser: currentUser ),
+          AddPostScreen(currentUser: currentUser),
           Text('notifications'),
           ProfileScreen(
             uid: '',
