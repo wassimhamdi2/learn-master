@@ -79,7 +79,8 @@ class _SearchScreenState extends State<SearchScreen> {
         future: searchResultsFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return circularProgress();
+            return circularProgress() ;
+            
           }
           List<UserResult> searchResults = [];
           snapshot.data!.docs.forEach((doc) {

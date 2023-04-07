@@ -70,10 +70,7 @@ class _HomePageState extends State<HomePage> {
           SearchScreen(),
           AddPostScreen(currentUser: currentUser),
           Text('notifications'),
-          ProfileScreen(
-            uid: '',
-            // uid: FirebaseAuth.instance.currentUser!.uid,
-          ),
+          ProfileScreen(profileId: currentUser?.uid ?? ''),
         ],
       ),
       bottomNavigationBar: CupertinoTabBar(
