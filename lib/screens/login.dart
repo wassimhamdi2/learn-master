@@ -4,7 +4,6 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/reusable_widgets/reusable_widget.dart';
-import 'package:learn/screens/logup.dart';
 import 'package:learn/ultils/colors_utils.dart';
 import 'package:learn/screens/home.dart';
 
@@ -26,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
             User? user = FirebaseAuth.instance.currentUser;
     if (formdata!.validate()) {
       try {
+        // ignore: unused_local_variable
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: _emailTextContoller.text,

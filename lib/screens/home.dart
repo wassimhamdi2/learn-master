@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as UUser;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:learn/screens/Home.dart';
 import 'package:learn/screens/profile_screen.dart';
 import 'package:learn/screens/search_screen.dart';
 import 'package:learn/models/user.dart';

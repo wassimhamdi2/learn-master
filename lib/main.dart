@@ -1,10 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:learn/screens/home.dart';
-import 'package:learn/screens/login.dart';
 import 'package:learn/screens/splach_screen.dart';
-import 'dart:ui';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
