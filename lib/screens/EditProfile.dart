@@ -1,9 +1,15 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learn/reusable_widgets/Progress.dart';
 import 'package:learn/screens/home.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as Im;
 
 import '../models/user.dart';
 import '../ultils/colors.dart';
@@ -17,12 +23,17 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  FirebaseStorage storage = FirebaseStorage.instance;
   TextEditingController usernameControler = TextEditingController();
   TextEditingController bioControler = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isLoading = false;
   User? user;
   File? file;
+  String ProfileImId = Uuid().v4();
   String secondPhotoUrl = "";
+  String SecondBio = "";
+  String SecondName = "";
   handleChooseFromGallery() async {
     Navigator.pop(context);
     final pickedFile = await ImagePicker().pickImage(
@@ -30,6 +41,17 @@ class _EditProfileState extends State<EditProfile> {
     );
     setState(() {
       file = pickedFile != null ? File(pickedFile.path) : null;
+    });
+  }
+
+  compressImage() async {
+    final tempDit = await getTemporaryDirectory();
+    final path = tempDit.path;
+    Im.Image? imageFile = Im.decodeImage(file!.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$ProfileImId.jpg')
+      ..writeAsBytesSync(Im.encodeJpg(imageFile!, quality: 85));
+    setState(() {
+      file = compressedImageFile;
     });
   }
 
@@ -43,6 +65,62 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       file = pickedFile != null ? File(pickedFile.path) : null;
     });
+  }
+
+  Future<String> uploadImage(File imageFile) async {
+    UploadTask uploadTask =
+        storageRef.child("post_$ProfileImId.jpg").putFile(imageFile);
+    TaskSnapshot storageSnap = await uploadTask.whenComplete(() => null);
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  deletePhoto(String Url) async {
+    final Reference ref = storage.refFromURL(Url);
+    await ref.delete();
+  }
+
+  checkEmpty() {
+    if (bioControler.text.isEmpty &&
+        usernameControler.text.isEmpty &&
+        file != null) {
+      bioControler.text = SecondBio;
+      usernameControler.text = SecondName;
+    }
+    if (bioControler.text.isEmpty && usernameControler.text.isNotEmpty) {
+      bioControler.text = SecondBio;
+    }
+    if (bioControler.text.isNotEmpty && usernameControler.text.isEmpty) {
+      usernameControler.text = SecondName;
+    }
+  }
+
+  update() async {
+    checkEmpty();
+    var formdata = formKey.currentState;
+    if (formdata!.validate()) {
+      if (file == null) {
+        usersRef.doc(widget.currentUserId).update(
+            {"username": usernameControler.text, "bio": bioControler.text});
+        SnackBar snackBar = SnackBar(content: Text("Profile updated"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else {
+        await compressImage();
+        String mediaUrl = await uploadImage(file!);
+        SnackBar snackBar = SnackBar(content: Text("Profile updated"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        usersRef.doc(widget.currentUserId).update({
+          "username": usernameControler.text,
+          "bio": bioControler.text,
+          "photoUrl": mediaUrl
+        });
+        deletePhoto(secondPhotoUrl);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+    }
   }
 
   selectImage(parentContext) {
@@ -81,9 +159,9 @@ class _EditProfileState extends State<EditProfile> {
     });
     DocumentSnapshot doc = await usersRef.doc(widget.currentUserId).get();
     User user = User.fromDocument(doc);
-    usernameControler.text = user.username;
-    bioControler.text = user.bio;
     secondPhotoUrl = user.photoUrl;
+    SecondBio = user.bio;
+    SecondName = user.username;
     setState(() {
       isLoading = false;
     });
@@ -151,95 +229,110 @@ class _EditProfileState extends State<EditProfile> {
                         padding: EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            Container(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty ||
-                                      !RegExp(r'^[a-z A-z]+$')
-                                          .hasMatch(value)) {
-                                    return "Enter correct name";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                controller: usernameControler,
-                                obscureText: false,
-                                enableSuggestions: true,
-                                cursorColor: Colors.white,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9)),
-                                decoration: InputDecoration(
-                                  errorStyle: TextStyle(
-                                    color: Colors.white54,
+                            Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value!.isEmpty ||
+                                            !RegExp(r'^[a-zA-Z ]{3,}$')
+                                                .hasMatch(value)) {
+                                          return "Enter correct name";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      controller: usernameControler,
+                                      obscureText: false,
+                                      enableSuggestions: true,
+                                      cursorColor: Colors.white,
+                                      style: TextStyle(
+                                          color: Colors.white.withOpacity(0.9)),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: Colors.white54,
+                                        ),
+                                        // ignore: prefer_const_constructors
+                                        prefixIcon: Icon(
+                                          Icons.person_outline,
+                                          color: Colors.white70,
+                                        ),
+                                        labelText: "Enter New User name",
+                                        labelStyle: TextStyle(
+                                            color:
+                                                Colors.white.withOpacity(0.9)),
+                                        filled: true,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        fillColor:
+                                            Colors.white.withOpacity(0.3),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                            borderSide: const BorderSide(
+                                                width: 0,
+                                                style: BorderStyle.none)),
+                                      ),
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
                                   ),
                                   // ignore: prefer_const_constructors
-                                  prefixIcon: Icon(
-                                    Icons.person_outline,
-                                    color: Colors.white70,
+                                  SizedBox(
+                                    height: 20,
                                   ),
-                                  labelText: "Enter New User name",
-                                  labelStyle: TextStyle(
-                                      color: Colors.white.withOpacity(0.9)),
-                                  filled: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  fillColor: Colors.white.withOpacity(0.3),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          width: 0, style: BorderStyle.none)),
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                            ),
-                            // ignore: prefer_const_constructors
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty ||
-                                      !RegExp(r'^[a-z A-z]+$')
-                                          .hasMatch(value)) {
-                                    return "Enter correct name";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                controller: bioControler,
-                                obscureText: false,
-                                enableSuggestions: true,
-                                cursorColor: Colors.white,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9)),
-                                decoration: InputDecoration(
-                                  errorStyle: TextStyle(
-                                    color: Colors.white54,
+                                  Container(
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value!.isEmpty ||
+                                            !RegExp(r'^.{1,50}$')
+                                                .hasMatch(value)) {
+                                          return "bio to long";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      controller: bioControler,
+                                      obscureText: false,
+                                      enableSuggestions: true,
+                                      cursorColor: Colors.white,
+                                      style: TextStyle(
+                                          color: Colors.white.withOpacity(0.9)),
+                                      decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                          color: Colors.white54,
+                                        ),
+                                        // ignore: prefer_const_constructors
+                                        prefixIcon: Icon(
+                                          Icons.text_fields_sharp,
+                                          color: Colors.white70,
+                                        ),
+                                        labelText: "Enter New Bio",
+                                        labelStyle: TextStyle(
+                                            color:
+                                                Colors.white.withOpacity(0.9)),
+                                        filled: true,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        fillColor:
+                                            Colors.white.withOpacity(0.3),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                            borderSide: const BorderSide(
+                                                width: 0,
+                                                style: BorderStyle.none)),
+                                      ),
+                                      keyboardType: TextInputType.emailAddress,
+                                    ),
                                   ),
                                   // ignore: prefer_const_constructors
-                                  prefixIcon: Icon(
-                                    Icons.text_fields_sharp,
-                                    color: Colors.white70,
+                                  SizedBox(
+                                    height: 20,
                                   ),
-                                  labelText: "Enter New Bio",
-                                  labelStyle: TextStyle(
-                                      color: Colors.white.withOpacity(0.9)),
-                                  filled: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  fillColor: Colors.white.withOpacity(0.3),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          width: 0, style: BorderStyle.none)),
-                                ),
-                                keyboardType: TextInputType.emailAddress,
+                                ],
                               ),
-                            ),
-                            // ignore: prefer_const_constructors
-                            SizedBox(
-                              height: 20,
                             ),
                           ],
                         ),
@@ -247,7 +340,9 @@ class _EditProfileState extends State<EditProfile> {
                       Padding(
                         padding: EdgeInsets.only(top: 16.0, bottom: 8.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            update();
+                          },
                           child: Text(
                             "Update Profile",
                             style: const TextStyle(

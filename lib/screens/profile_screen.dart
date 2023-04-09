@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/reusable_widgets/Progress.dart';
 import 'package:learn/screens/home.dart';
+import '../models/post.dart';
 import '../models/user.dart';
 import '../ultils/colors.dart';
 import 'EditProfile.dart';
@@ -16,6 +18,29 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final String? currentUserId= currentUser?.uid;
+bool isLoading = false;
+int postCount = 0;
+List<Post>posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getProfilePosts();
+  }
+
+getProfilePosts() async {
+  setState(() {
+    isLoading = true;
+  });
+  QuerySnapshot snapshot = await postsRef.doc(widget.profileId).collection('userPosts').orderBy('timestamp',descending: true)
+  .get();
+  setState(() {
+    isLoading = false;
+    postCount = snapshot.docs.length;
+    posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+  });
+}
+
   editProfile() {
     Navigator.push(
   context,
@@ -100,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            buildCountColumn("post", 0),
+                            buildCountColumn("post", postCount),
                             buildCountColumn("followers", 0),
                             buildCountColumn("following", 0),
                           ],
@@ -163,6 +188,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
+  builProfilePosts(){
+    if(isLoading){
+      circularProgress();
+    }
+    return Column(children: posts);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +208,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         children: [
           buildProfileHeader(),
+          Divider(
+            height: 0.0,
+          ),
+            builProfilePosts(),
         ],
       ),
     );
