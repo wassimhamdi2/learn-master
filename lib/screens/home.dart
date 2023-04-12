@@ -13,6 +13,7 @@ import 'feed_screen.dart';
 final usersRef = FirebaseFirestore.instance.collection("users");
 final user = UUser.FirebaseAuth.instance.currentUser;
 final Reference storageRef = FirebaseStorage.instance.ref();
+final commentsRef = FirebaseFirestore.instance.collection('comments');
 final postsRef = FirebaseFirestore.instance.collection("posts");
 final DateTime timestamp = DateTime.now();
 late User? currentUser = null;

@@ -49,6 +49,7 @@ dependencies:
   geolocator: ^9.0.2
   geocoding: ^2.0.1
   animator: any
+  timeago: any
 
 dev_dependencies:
   flutter_test:
