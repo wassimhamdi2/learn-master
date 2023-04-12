@@ -48,6 +48,7 @@ dependencies:
   image: ^3.0.2
   geolocator: ^9.0.2
   geocoding: ^2.0.1
+  animator: any
 
 dev_dependencies:
   flutter_test:

@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/models/user.dart';
 import 'package:learn/reusable_widgets/Progress.dart';
+import 'package:learn/reusable_widgets/custom_image.dart';
 import 'package:learn/screens/home.dart';
 import 'package:intl/intl.dart';
-
-import '../reusable_widgets/custom_image.dart';
+import 'package:animator/animator.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -81,24 +81,19 @@ class _PostState extends State<Post> {
   final Timestamp timestamp;
   int likeCount;
   Map likes;
-  bool isLiked = false;
+  late bool isLiked;
   bool showHeart = false;
-  _PostState(
-      {required this.postId,
-      required this.ownerId,
-      required this.username,
-      required this.location,
-      required this.description,
-      required this.mediaUrl,
-      required this.likeCount,
-      required this.likes,
-      required this.timestamp});
-
-  @override
-  void initState() {
-    super.initState();
-    isLiked = likes[currentUserId] == true;
-  }
+  _PostState({
+    required this.postId,
+    required this.ownerId,
+    required this.username,
+    required this.location,
+    required this.description,
+    required this.mediaUrl,
+    required this.likeCount,
+    required this.likes,
+    required this.timestamp,
+  });
 
   buildPostHeader() {
     var date = timestamp.toDate();
@@ -143,10 +138,19 @@ class _PostState extends State<Post> {
         children: [
           cachedNetworkImage(mediaUrl),
           showHeart
-              ? Icon(
-                  Icons.favorite,
-                  size: 150,
-                  color: Colors.red.withOpacity(0.5),
+              ? Animator(
+                  duration: Duration(milliseconds: 300),
+                  tween: Tween<double>(begin: 0.8, end: 1.4),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                  builder: (context, anim, child) => Transform.scale(
+                    scale: anim.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 80.0,
+                      color: Colors.red,
+                    ),
+                  ),
                 )
               : Text("")
         ],
@@ -253,6 +257,7 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+    isLiked = (likes[currentUserId] == true);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

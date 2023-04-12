@@ -188,13 +188,32 @@ getProfilePosts() async {
           );
         });
   }
-  builProfilePosts(){
-    if(isLoading){
-      circularProgress();
+builProfilePosts() {
+    if (isLoading) {
+      return circularProgress();
+    } else if (posts.isEmpty) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/img/noPosts.png',
+              height: 260.0,
+            ),
+            Padding(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Text("No Posts",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontSize: 22.0,
+                    )))
+          ],
+        ),
+      );
     }
     return Column(children: posts);
-  }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
