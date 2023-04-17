@@ -72,6 +72,7 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  User? currentU;
   final String? currentUserId = user?.uid;
   final String postId;
   final String ownerId;
@@ -95,8 +96,14 @@ class _PostState extends State<Post> {
       required this.likes,
       required this.timestamp});
 
+  Future<void> getUser() async {
+    final doc = await usersRef.doc(user!.uid).get();
+    currentU = User.fromDocument(doc);
+  }
+
   @override
   void initState() {
+    getUser();
     super.initState();
     isLiked = likes[currentUserId] == true;
   }
@@ -163,7 +170,7 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .doc(postId)
           .update({'likes.$currentUserId': false});
-
+      removeLikeFromActivityFeed();
       setState(() {
         likeCount -= 1;
         isLiked = false;
@@ -175,6 +182,7 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .doc(postId)
           .update({'likes.$currentUserId': true});
+      addLikeToActivityFeed();
       setState(() {
         likeCount += 1;
         isLiked = true;
@@ -185,6 +193,38 @@ class _PostState extends State<Post> {
         setState(() {
           showHeart = false;
         });
+      });
+    }
+  }
+
+  removeLikeFromActivityFeed() {
+    bool isNotPostOwner = currentUserId != ownerId;
+    if (isNotPostOwner) {
+      activityFeedRef
+          .doc(ownerId)
+          .collection("feedItems")
+          .doc(postId)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
+    }
+  }
+
+  addLikeToActivityFeed() {
+    //add a notification to the postOwner's activity feed only if comment made bvy other user (to avoid getting nptifaction for our own like)
+    bool isNotPostOwner = currentUserId != ownerId;
+    if (isNotPostOwner) {
+      activityFeedRef.doc(ownerId).collection("feedItems").doc(postId).set({
+        "type": "like",
+        "username": currentU!.username,
+        "userId": currentU!.uid,
+        "userProfileImg": currentU!.photoUrl,
+        "postId": postId,
+        "mediaUrl": mediaUrl,
+        "timestamp": timestamp,
       });
     }
   }
@@ -206,12 +246,8 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
             GestureDetector(
-              onTap: () => showComments(
-                context,
-                postId:postId,
-                ownerId:ownerId,
-                mediaUrl:mediaUrl
-                ),
+              onTap: () => showComments(context,
+                  postId: postId, ownerId: ownerId, mediaUrl: mediaUrl),
               child: Icon(
                 Icons.chat,
                 size: 28.0,
@@ -270,14 +306,15 @@ class _PostState extends State<Post> {
   }
 }
 
-
-showComments(BuildContext context ,{required String postId ,required String ownerId,required String mediaUrl}) {
-  Navigator.push(context,MaterialPageRoute(builder: (context) {
+showComments(BuildContext context,
+    {required String postId,
+    required String ownerId,
+    required String mediaUrl}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
     return Comments(
-      postId : postId,
-      postOwnerId : ownerId ,
-      postMediaUrl : mediaUrl,
-    
+      postId: postId,
+      postOwnerId: ownerId,
+      postMediaUrl: mediaUrl,
     );
   }));
 }

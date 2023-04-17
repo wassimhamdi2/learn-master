@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as UUser;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/activity_feed.dart';
 import 'package:learn/screens/profile_screen.dart';
 import 'package:learn/screens/search_screen.dart';
 import 'package:learn/models/user.dart';
@@ -14,6 +15,7 @@ final usersRef = FirebaseFirestore.instance.collection("users");
 final user = UUser.FirebaseAuth.instance.currentUser;
 final Reference storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');
+final activityFeedRef = FirebaseFirestore.instance.collection('feed');
 final postsRef = FirebaseFirestore.instance.collection("posts");
 final DateTime timestamp = DateTime.now();
 late User? currentUser = null;
@@ -68,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           FeedScreen(),
           SearchScreen(),
           AddPostScreen(currentUser: currentUser),
-          Text('notifications'),
+          ActivityFeed(),
           ProfileScreen(profileId: currentUser?.uid ?? ''),
         ],
       ),
