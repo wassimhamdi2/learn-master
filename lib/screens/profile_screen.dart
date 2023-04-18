@@ -17,10 +17,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final String? currentUserId= currentUser?.uid;
-bool isLoading = false;
-int postCount = 0;
-List<Post>posts = [];
+  final String? currentUserId = currentUser?.uid;
+  bool isLoading = false;
+  int postCount = 0;
+  List<Post> posts = [];
 
   @override
   void initState() {
@@ -28,55 +28,61 @@ List<Post>posts = [];
     getProfilePosts();
   }
 
-getProfilePosts() async {
-  setState(() {
-    isLoading = true;
-  });
-  QuerySnapshot snapshot = await postsRef.doc(widget.profileId).collection('userPosts').orderBy('timestamp',descending: true)
-  .get();
-  setState(() {
-    isLoading = false;
-    postCount = snapshot.docs.length;
-    posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
-  });
-}
+  getProfilePosts() async {
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot snapshot = await postsRef
+        .doc(widget.profileId)
+        .collection('userPosts')
+        .orderBy('timestamp', descending: true)
+        .get();
+    setState(() {
+      isLoading = false;
+      postCount = snapshot.docs.length;
+      posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    });
+  }
 
   editProfile() {
     Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => EditProfile(currentUserId : widget.profileId)),
-);
+      context,
+      MaterialPageRoute(
+          builder: (context) => EditProfile(currentUserId: widget.profileId)),
+    );
   }
 
-  // buildButton() {
-  //   return Container(
-  //     padding: EdgeInsets.only(top: 2.0),
-  //     child: TextButton(
-  //       onPressed:()=>editProfle(),
-  //       child: Container(
-  //         height: 27.0,
-  //         width: 150.0, // set a specific width
-  //         child: Text(
-  //           "Edit Profile",
-  //           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-  //         ),
-  //         alignment: Alignment.center,
-  //         decoration: BoxDecoration(
-  //             color: Colors.blue,
-  //             borderRadius: BorderRadius.circular(5.0),
-  //             border: Border.all(color: Colors.blue)),
-  //       ),
-  //     ),
-  //   );
-  // }
+  buildButton(String e) {
+    return Container(
+      padding: EdgeInsets.only(top: 2.0),
+      child: TextButton(
+        onPressed:(){
+          editProfile();
+        },
+        child: Container(
+          height: 27.0,
+          width: 150.0, // set a specific width
+          child: Text(
+            e,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(color: Colors.blue)),
+        ),
+      ),
+    );
+  }
 
-  // Widget buildProfileButton() {
-    // bool isprofileOwner = currentUserId == widget.profileId;
-  //   if (!isprofileOwner) {
-  //     return buildButton("Edit Profile", editProfile);
-  //   }
-  //   return Container();
-  // }
+  Widget buildProfileButton() {
+  bool isprofileOwner = user!.uid == widget.profileId;
+    if (isprofileOwner) {
+      return buildButton("Edit Profile");
+    }
+    return Text('');
+  }
 
   Column buildCountColumn(String label, int count) {
     return Column(
@@ -133,27 +139,28 @@ getProfilePosts() async {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 10.0),
-                                child: TextButton(
-                              onPressed: () => editProfile(),
-                              child: Container(
-                                height: 27.0,
-                                width: 250.0, // set a specific width
-                                child: Text(
-                                  "Edit Profile",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(color: Colors.blue)),
-                              ),
-                            ),
-                            ),
+                            buildProfileButton()
+                            // Container(
+                            //   padding: EdgeInsets.only(top: 10.0),
+                            //   child: TextButton(
+                            //     onPressed: () => editProfile(),
+                            //     child: Container(
+                            //       height: 27.0,
+                            //       width: 250.0, // set a specific width
+                            //       child: Text(
+                            //         "Edit Profile",
+                            //         style: TextStyle(
+                            //             color: Colors.white,
+                            //             fontWeight: FontWeight.bold),
+                            //       ),
+                            //       alignment: Alignment.center,
+                            //       decoration: BoxDecoration(
+                            //           color: Colors.blue,
+                            //           borderRadius: BorderRadius.circular(5.0),
+                            //           border: Border.all(color: Colors.blue)),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         )
                       ],
@@ -188,7 +195,8 @@ getProfilePosts() async {
           );
         });
   }
-builProfilePosts() {
+
+  builProfilePosts() {
     if (isLoading) {
       return circularProgress();
     } else if (posts.isEmpty) {
@@ -213,11 +221,16 @@ builProfilePosts() {
       );
     }
     return Column(children: posts);
-}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          size: 30.0,
+          color: primaryColor,
+        ),
         titleTextStyle: TextStyle(
             color: primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
         centerTitle: true,
@@ -230,7 +243,7 @@ builProfilePosts() {
           Divider(
             height: 0.0,
           ),
-            builProfilePosts(),
+          builProfilePosts(),
         ],
       ),
     );

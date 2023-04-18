@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/reusable_widgets/Progress.dart';
 import 'package:learn/screens/home.dart';
+import 'package:learn/screens/post_screen.dart';
+import 'package:learn/screens/profile_screen.dart';
 import '../models/user.dart';
 import '../ultils/colors.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -26,6 +28,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     final doc = await usersRef.doc(user!.uid).get();
     currentUserr = User.fromDocument(doc);
   }
+
   getActivityFeed() async {
     QuerySnapshot snapshot = await activityFeedRef
         .doc(user?.uid)
@@ -33,10 +36,11 @@ class _ActivityFeedState extends State<ActivityFeed> {
         .orderBy('timestamp', descending: true)
         .limit(50)
         .get();
-        List<ActivityFeedItem> feedItems = [];
-        snapshot.docs.forEach((doc) {
-          feedItems.add(ActivityFeedItem.fromDocument(doc));
-        });
+    List<ActivityFeedItem> feedItems = [];
+    snapshot.docs.forEach((doc) {
+      feedItems.add(ActivityFeedItem.fromDocument(doc));
+
+    });
     return feedItems;
   }
 
@@ -104,10 +108,17 @@ class ActivityFeedItem extends StatelessWidget {
     );
   }
 
-  configureMediaPreview() {
+  showPost(context) {
+    Navigator.push(context,MaterialPageRoute(builder: (Context) =>
+    PostScreen(userId: userId, postId: postId)
+    
+    ));
+  }
+
+  configureMediaPreview(context) {
     if (type == "like" || type == 'comment') {
       mediaPreview = GestureDetector(
-        onTap: () => print("showing post"),
+        onTap: () => showPost(context),
         child: Container(
             height: 50.0,
             width: 50.0,
@@ -139,45 +150,40 @@ class ActivityFeedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    configureMediaPreview();
+    configureMediaPreview(context);
     return Padding(
       padding: EdgeInsets.only(bottom: 2.0),
       child: Container(
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-          onTap: () => print("show profile"),
-          child:RichText(
+              onTap: () => showProfile(context, profileId: user!.uid),
+              child: RichText(
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                      style: TextStyle(fontSize: 14.0, color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: username,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: '$activityItemText')
+                      ]))),
+          leading: CircleAvatar(
+            backgroundImage: CachedNetworkImageProvider(userProfileImg),
+          ),
+          subtitle: Text(
+            timeago.format(timestamp.toDate()),
             overflow: TextOverflow.ellipsis,
-            text:TextSpan(
-              style: TextStyle(
-                fontSize: 14.0,
-                color: Colors.black
-              ),
-              children: [
-                TextSpan(
-                  text: username,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text: '$activityItemText'
-                )
-
-              ]
-            )
-             )
-             ),
-             leading: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(userProfileImg),
-             ),
-             subtitle:Text(
-              timeago.format(timestamp.toDate()),
-              overflow: TextOverflow.ellipsis,
-             ) ,
-             trailing: mediaPreview,
+          ),
+          trailing: mediaPreview,
         ),
       ),
-      );
+    );
   }
+}
+
+showProfile(BuildContext context , {required String profileId}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context)=>
+  ProfileScreen(profileId : profileId)));
 }
