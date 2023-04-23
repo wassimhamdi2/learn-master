@@ -17,17 +17,66 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  User? currentUsser;
   final String? currentUserId = currentUser?.uid;
   bool isLoading = false;
+  bool isFollowing = false;
   int postCount = 0;
+  int followerCount = 0;
+  int followingCount = 0;
   List<Post> posts = [];
 
   @override
   void initState() {
     super.initState();
     getProfilePosts();
+    getUser();
+    checkIfFollowing();
+    getFollowers();
+    getFollowing();
   }
 
+  Future<void> getUser() async {
+    final doc = await usersRef.doc(user!.uid).get();
+    currentUsser = User.fromDocument(doc);
+  }
+
+  checkIfFollowing() async {
+    DocumentSnapshot doc = await followersRef
+        .doc(widget.profileId)
+        .collection("userFollowers")
+        .doc(user?.uid)
+        .get();
+
+    setState(() {
+      isFollowing = doc.exists;
+    });
+  }
+
+  
+  getFollowers () async {
+QuerySnapshot snapshot = await followersRef
+.doc(widget.profileId)
+.collection('userFollowers')
+.get();
+setState(() {
+  followerCount = snapshot.docs.length;
+});
+
+
+  }
+  
+  getFollowing()async {
+    QuerySnapshot snapshot = await followingRef
+.doc(widget.profileId)
+.collection('userFollowing')
+.get();
+setState(() {
+  followingCount = snapshot.docs.length;
+});
+  }
+  
+  
   getProfilePosts() async {
     setState(() {
       isLoading = true;
@@ -53,35 +102,120 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   buildButton(String e) {
+    bool isprofileOwner = user!.uid == widget.profileId;
     return Container(
       padding: EdgeInsets.only(top: 2.0),
       child: TextButton(
-        onPressed:(){
-          editProfile();
+        onPressed: () {
+          if (isprofileOwner) {
+            editProfile();
+          } else if (isFollowing) {
+            handleUnfollowUser();
+          } else if (!isFollowing) {
+            handleFollowUser();
+          }
         },
         child: Container(
           height: 27.0,
           width: 150.0, // set a specific width
           child: Text(
             e,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: isFollowing ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold),
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: Colors.blue,
+              color: isFollowing ? Colors.white : Colors.blue,
               borderRadius: BorderRadius.circular(5.0),
-              border: Border.all(color: Colors.blue)),
+              border:
+                  Border.all(color: isFollowing ? Colors.grey : Colors.blue)),
         ),
       ),
     );
   }
 
   Widget buildProfileButton() {
-  bool isprofileOwner = user!.uid == widget.profileId;
+    bool isprofileOwner = user!.uid == widget.profileId;
     if (isprofileOwner) {
       return buildButton("Edit Profile");
+    } else if (isFollowing) {
+      return buildButton("Unfollow");
+    } else if (!isFollowing) {
+      return buildButton("follow");
+    } else {
+      return Text("");
     }
-    return Text('');
+  }
+
+  handleUnfollowUser() {
+    setState(() {
+      isFollowing = false;
+    });
+    // remove follower
+    followersRef
+        .doc(widget.profileId)
+        .collection("userFollowers")
+        .doc(currentUsser?.uid.toString())
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // remove following
+    followingRef
+        .doc(currentUsser?.uid.toString())
+        .collection("userFollowing")
+        .doc(widget.profileId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    //delete activity feed item
+    activityFeedRef
+        .doc(widget.profileId)
+        .collection("feedItems")
+        .doc(currentUsser?.uid.toString())
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  handleFollowUser() {
+    setState(() {
+      isFollowing = true;
+    });
+    // Make auth user follower of Another user (update their followers collection)
+    followersRef
+        .doc(widget.profileId)
+        .collection("userFollowers")
+        .doc(currentUsser?.uid.toString())
+        .set({});
+    // put  that user on your following collection (update your following collection )
+    followingRef
+        .doc(currentUsser?.uid.toString())
+        .collection("userFollowing")
+        .doc(widget.profileId)
+        .set({});
+    //add activity feed for that user to notify about new followers (us)
+    activityFeedRef
+        .doc(widget.profileId)
+        .collection("feedItems")
+        .doc(currentUsser?.uid.toString())
+        .set({
+      "type": "follow",
+      "ownerId": widget.profileId,
+      "username": currentUsser?.username.toString(),
+      "userId": currentUsser?.uid.toString(),
+      "userProfileImg": currentUsser!.photoUrl,
+      "timestamp": timestamp,
+    });
   }
 
   Column buildCountColumn(String label, int count) {
@@ -132,8 +266,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             buildCountColumn("post", postCount),
-                            buildCountColumn("followers", 0),
-                            buildCountColumn("following", 0),
+                            buildCountColumn("followers", followerCount),
+                            buildCountColumn("following", followingCount),
                           ],
                         ),
                         Row(

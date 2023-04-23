@@ -15,8 +15,10 @@ final usersRef = FirebaseFirestore.instance.collection("users");
 final user = UUser.FirebaseAuth.instance.currentUser;
 final Reference storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');
-final activityFeedRef = FirebaseFirestore.instance.collection('feed');
 final postsRef = FirebaseFirestore.instance.collection("posts");
+final activityFeedRef = FirebaseFirestore.instance.collection('feed');
+final followersRef = FirebaseFirestore.instance.collection('followers');
+final followingRef = FirebaseFirestore.instance.collection('following');
 final DateTime timestamp = DateTime.now();
 late User? currentUser = null;
 
