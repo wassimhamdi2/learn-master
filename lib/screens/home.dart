@@ -20,7 +20,7 @@ final activityFeedRef = FirebaseFirestore.instance.collection('feed');
 final followersRef = FirebaseFirestore.instance.collection('followers');
 final followingRef = FirebaseFirestore.instance.collection('following');
 final DateTime timestamp = DateTime.now();
-late User? currentUser = null;
+ User? currentUser ;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

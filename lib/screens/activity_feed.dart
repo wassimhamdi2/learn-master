@@ -110,7 +110,7 @@ class ActivityFeedItem extends StatelessWidget {
 
   showPost(context) {
     Navigator.push(context,MaterialPageRoute(builder: (Context) =>
-    PostScreen(userId: userId, postId: postId)
+    PostScreen(postId: postId ,userId: user!.uid)
     
     ));
   }
@@ -138,9 +138,9 @@ class ActivityFeedItem extends StatelessWidget {
     }
 
     if (type == "like") {
-      activityItemText = "liked your post";
+      activityItemText = "  liked your post";
     } else if (type == "follow") {
-      activityItemText = "is followin you ";
+      activityItemText = " is followin you ";
     } else if (type == "comment") {
       activityItemText = "  replied :$commentData ";
     } else {

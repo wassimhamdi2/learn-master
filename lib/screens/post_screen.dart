@@ -11,6 +11,7 @@ class PostScreen extends StatelessWidget {
   final String postId;
   PostScreen({required this.userId, required this.postId});
 
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
