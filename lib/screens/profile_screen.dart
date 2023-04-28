@@ -53,30 +53,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  
-  getFollowers () async {
-QuerySnapshot snapshot = await followersRef
-.doc(widget.profileId)
-.collection('userFollowers')
-.get();
-setState(() {
-  followerCount = snapshot.docs.length;
-});
-
-
+  getFollowers() async {
+    QuerySnapshot snapshot = await followersRef
+        .doc(widget.profileId)
+        .collection('userFollowers')
+        .get();
+    setState(() {
+      followerCount = snapshot.docs.length;
+    });
   }
-  
-  getFollowing()async {
+
+  getFollowing() async {
     QuerySnapshot snapshot = await followingRef
-.doc(widget.profileId)
-.collection('userFollowing')
-.get();
-setState(() {
-  followingCount = snapshot.docs.length;
-});
+        .doc(widget.profileId)
+        .collection('userFollowing')
+        .get();
+    setState(() {
+      followingCount = snapshot.docs.length;
+    });
   }
-  
-  
+
   getProfilePosts() async {
     setState(() {
       isLoading = true;
@@ -353,8 +349,9 @@ setState(() {
           ],
         ),
       );
+    } else {
+      return Column(children: posts);
     }
-    return Column(children: posts);
   }
 
   @override
