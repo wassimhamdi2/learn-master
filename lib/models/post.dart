@@ -7,6 +7,7 @@ import 'package:learn/models/user.dart';
 import 'package:learn/reusable_widgets/Progress.dart';
 import 'package:learn/screens/home.dart';
 import 'package:intl/intl.dart';
+import 'package:learn/screens/profile_screen.dart';
 
 import '../reusable_widgets/custom_image.dart';
 
@@ -125,7 +126,14 @@ class _PostState extends State<Post> {
               backgroundColor: Colors.grey,
             ),
             title: GestureDetector(
-              onTap: () => print('showing Profile'),
+              onTap: () {
+                if(user.uid !=currentUserId){
+                  Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => ProfileScreen(profileId : user.uid)));
+                }
+              },
               child: Text(
                 user.username,
                 style: TextStyle(

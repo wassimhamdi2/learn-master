@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/msg_home.dart';
 import 'package:learn/ultils/colors.dart';
 
 import '../models/post.dart';
@@ -43,12 +44,11 @@ class _FeedScreenState extends State<FeedScreen> {
       followingIds.add(doc.id);
     });
     // followingIds.add("Uc0KOmqlg8N4xMfjRujST6hcNSs2");
-    
+
     for (String userId in followingIds) {
       // Get a reference to the user's posts collection
-      CollectionReference postsCollection = postsRef
-          .doc(userId)
-          .collection('userPosts');
+      CollectionReference postsCollection =
+          postsRef.doc(userId).collection('userPosts');
       // Use a query to get all documents in the user's posts collection
       QuerySnapshot postsSnapshot =
           await postsCollection.orderBy('timestamp', descending: true).get();
@@ -65,7 +65,7 @@ class _FeedScreenState extends State<FeedScreen> {
   builfollowingPosts() {
     // if (isLoading) {
     //   return circularProgress();
-    // } else 
+    // } else
     if (posts.isEmpty) {
       return Container(
         child: Column(
@@ -88,10 +88,18 @@ class _FeedScreenState extends State<FeedScreen> {
       );
     } else {
       if (isLoading) {
-      return circularProgress();}
-    
+        return circularProgress();
+      }
+
       return Column(children: posts);
     }
+  }
+
+  chat() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MsgHome()),
+    );
   }
 
   @override
@@ -102,14 +110,13 @@ class _FeedScreenState extends State<FeedScreen> {
             backgroundColor: mobileBackgroundColor,
             iconTheme: IconThemeData(color: Colors.purple),
             centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  // Do something when the button is pressed
-                },
-              ),
-            ],
+            actions: [IconButton(
+              icon:
+               Icon(Icons.send),
+               onPressed: chat
+               )
+               ]
+              ,
             title: Image.asset(
               'assets/img/Learn_me_c.png',
               height: 50,
@@ -174,7 +181,7 @@ class _FeedScreenState extends State<FeedScreen> {
           child: ListView(
             children: [
               SizedBox(
-                height: 10 ,
+                height: 10,
               ),
               Divider(
                 height: 0.0,

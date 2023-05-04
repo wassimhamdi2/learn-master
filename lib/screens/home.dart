@@ -18,9 +18,11 @@ final commentsRef = FirebaseFirestore.instance.collection('comments');
 final postsRef = FirebaseFirestore.instance.collection("posts");
 final activityFeedRef = FirebaseFirestore.instance.collection('feed');
 final followersRef = FirebaseFirestore.instance.collection('followers');
+final chatRef = FirebaseFirestore.instance.collection("chats");
 final followingRef = FirebaseFirestore.instance.collection('following');
 final DateTime timestamp = DateTime.now();
  User? currentUser ;
+ 
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

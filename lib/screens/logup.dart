@@ -182,7 +182,11 @@ Future<File> getImageFileFromNetwork(String url) async {
             "photoUrl": mediaUrl,
             "email": _emailTextContoller.text,
             "bio": bioControler.text,
-            "role": rrole
+            "role": rrole,
+            "is_online":false,
+            "last_active":"0",
+            "push_token":"0"
+
           });
           // ignore: use_build_context_synchronously
           AwesomeDialog(
