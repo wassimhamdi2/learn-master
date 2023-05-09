@@ -17,6 +17,7 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');
 final postsRef = FirebaseFirestore.instance.collection("posts");
 final activityFeedRef = FirebaseFirestore.instance.collection('feed');
+final coursesRef = FirebaseFirestore.instance.collection('Courses');
 final followersRef = FirebaseFirestore.instance.collection('followers');
 final chatRef = FirebaseFirestore.instance.collection("chats");
 final followingRef = FirebaseFirestore.instance.collection('following');

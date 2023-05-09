@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/course_home.dart';
 import 'package:learn/screens/msg_home.dart';
 import 'package:learn/ultils/colors.dart';
 
@@ -110,13 +111,7 @@ class _FeedScreenState extends State<FeedScreen> {
             backgroundColor: mobileBackgroundColor,
             iconTheme: IconThemeData(color: Colors.purple),
             centerTitle: true,
-            actions: [IconButton(
-              icon:
-               Icon(Icons.send),
-               onPressed: chat
-               )
-               ]
-              ,
+            actions: [IconButton(icon: Icon(Icons.send), onPressed: chat)],
             title: Image.asset(
               'assets/img/Learn_me_c.png',
               height: 50,
@@ -142,9 +137,12 @@ class _FeedScreenState extends State<FeedScreen> {
               ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             ),
             ListTile(
-              title: Text("cours"),
+              title: Text("Courses"),
               leading: Icon(Icons.book),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CourseHome()));
+              },
             ),
             ListTile(
               title: Text("Groupe"),

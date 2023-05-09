@@ -210,7 +210,7 @@ class _MessageCardState extends State<MessageCard> {
                   //save option
                   _OptionItem(
                       icon: const Icon(Icons.download_rounded,
-                          color: Colors.blue, size: 26),
+                          color: Colors.blue, size: 26), 
                       name: 'Save Image',
                       onTap: () async {
                         try {
