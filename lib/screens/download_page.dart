@@ -24,23 +24,25 @@ class _DownloadPageState extends State<DownloadPage> {
   ];
   bool isLoading = false;
   List<Download> downloadPosts = [];
-    @override
+  @override
   void initState() {
     super.initState();
     getDownloadPosts();
   }
+
   getDownloadPosts() async {
     setState(() {
       isLoading = true;
     });
     QuerySnapshot snapshot = await coursesRef
-        .doc('Python')
+        .doc('allFiles')
         .collection('Files')
         .orderBy('timestamp', descending: true)
         .get();
     setState(() {
       isLoading = false;
-      downloadPosts = snapshot.docs.map((doc) => Download.fromDocument(doc)).toList();
+      downloadPosts =
+          snapshot.docs.map((doc) => Download.fromDocument(doc)).toList();
     });
   }
 
@@ -95,93 +97,93 @@ class _DownloadPageState extends State<DownloadPage> {
         color: Colors.grey.withOpacity(0.2),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 90,
-              child: Card(
-                child: Row(
-                  children: [
-                    Text(
-                      "course of :",
-                      style: TextStyle(
-                          color: Colors.purple,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      // Initial Value
-                      value: dropdownvalue,
+            // Container(
+            //   width: double.infinity,
+            //   height: 90,
+            //   child: Card(
+            //     child: Row(
+            //       children: [
+            //         Text(
+            //           "course of :",
+            //           style: TextStyle(
+            //               color: Colors.purple,
+            //               fontSize: 17,
+            //               fontWeight: FontWeight.bold),
+            //         ),
+            //         SizedBox(
+            //           width: 10,
+            //         ),
+            //         DropdownButton(
+            //           // Initial Value
+            //           value: dropdownvalue,
 
-                      // Down Arrow Icon
-                      icon: const Icon(Icons.keyboard_arrow_down),
+            //           // Down Arrow Icon
+            //           icon: const Icon(Icons.keyboard_arrow_down),
 
-                      // Array list of items
-                      items: items.map((String items) {
-                        return DropdownMenuItem(
-                          value: items,
-                          child: Text(items),
-                        );
-                      }).toList(),
-                      // After selecting the desired option,it will
-                      // change button value to selected value
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                        });
-                      },
-                      style: TextStyle(color: Colors.purple),
-                      dropdownColor: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search,
-                            color: Colors.purple,
-                            size: 24.0,
-                          ),
-                          SizedBox(
-                            width: 15.0,
-                          ),
-                          Text(
-                            "Search",
-                            style: TextStyle(
-                                color: Colors.purple,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
-                        ],
-                      ),
-                      style: ButtonStyle(
-                          // minimumSize:
-                          //     MaterialStateProperty.all<Size>(Size(100, 60)),
-                          // maximumSize:
-                          //     MaterialStateProperty.all<Size>(Size(100, 60)),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.black26;
-                            }
-                            return Colors.white;
-                          }),
-                          shape:
-                              MaterialStatePropertyAll<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30)))),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            //           // Array list of items
+            //           items: items.map((String items) {
+            //             return DropdownMenuItem(
+            //               value: items,
+            //               child: Text(items),
+            //             );
+            //           }).toList(),
+            //           // After selecting the desired option,it will
+            //           // change button value to selected value
+            //           onChanged: (String? newValue) {
+            //             setState(() {
+            //               dropdownvalue = newValue!;
+            //             });
+            //           },
+            //           style: TextStyle(color: Colors.purple),
+            //           dropdownColor: Colors.white,
+            //         ),
+            //         SizedBox(
+            //           width: 15.0,
+            //         ),
+            //         ElevatedButton(
+            //           onPressed: () {},
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               Icon(
+            //                 Icons.search,
+            //                 color: Colors.purple,
+            //                 size: 24.0,
+            //               ),
+            //               SizedBox(
+            //                 width: 15.0,
+            //               ),
+            //               Text(
+            //                 "Search",
+            //                 style: TextStyle(
+            //                     color: Colors.purple,
+            //                     fontWeight: FontWeight.bold,
+            //                     fontSize: 20),
+            //               ),
+            //             ],
+            //           ),
+            //           style: ButtonStyle(
+            //               // minimumSize:
+            //               //     MaterialStateProperty.all<Size>(Size(100, 60)),
+            //               // maximumSize:
+            //               //     MaterialStateProperty.all<Size>(Size(100, 60)),
+            //               backgroundColor:
+            //                   MaterialStateProperty.resolveWith((states) {
+            //                 if (states.contains(MaterialState.pressed)) {
+            //                   return Colors.black26;
+            //                 }
+            //                 return Colors.white;
+            //               }),
+            //               shape:
+            //                   MaterialStatePropertyAll<RoundedRectangleBorder>(
+            //                       RoundedRectangleBorder(
+            //                           borderRadius:
+            //                               BorderRadius.circular(30)))),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(

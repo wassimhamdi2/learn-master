@@ -1,23 +1,28 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:learn/screens/Home.dart';
+import 'package:learn/screens/course_home.dart';
 import 'package:path/path.dart' as bath;
 import '../ultils/colors.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class UploadPage extends StatefulWidget {
-  const UploadPage({super.key});
+
+class courseUpdate extends StatefulWidget {
+  final String file;
+  const courseUpdate({required this.file, Key? key}) : super(key: key);
 
   @override
-  State<UploadPage> createState() => _UploadPageState();
+  State<courseUpdate> createState() => _courseUpdateState();
 }
 
-class _UploadPageState extends State<UploadPage> {
-  List<String> documentExtensions = [
+class _courseUpdateState extends State<courseUpdate> {
+  String file_name = "";
+  File? file = null;
+  String downloadUrl = "";
+    String extension = "";
+      List<String> documentExtensions = [
     'pdf',
     'doc',
     'docx',
@@ -26,62 +31,7 @@ class _UploadPageState extends State<UploadPage> {
     'xls',
     'xlsx'
   ];
-  var items = [
-    'Java',
-    'Python',
-    'Machine Learning',
-    'Network',
-    'Web Develepment',
-  ];
-  File? file = null;
-  String file_name = "";
-  String extension = "";
-  String dropdownvalue = 'Java';
-  TextEditingController fileNameController = TextEditingController();
-  String downloadUrl = "";
-  final DateTime timestamp = DateTime.now();
-  // void initState() {
-  //   super.initState();
-  //   fileNameController.text=file_name;
-
-  // }
-
-  // Widget fileName(File? file) {
-  //   if (file != null) {
-  //     return Container(
-  //         height: 60,
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.all(Radius.circular(5)),
-  //         ),
-  //         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 5),
-  //         child: Text(
-  //           "File Name: ${file_name}",
-  //           overflow: TextOverflow.fade,
-  //           style: const TextStyle(
-  //               color: Colors.purple,
-  //               fontWeight: FontWeight.bold,
-  //               fontSize: 17),
-  //         ));
-  //   } else {
-  //     return const SizedBox(
-  //       height: 0,
-  //       width: 0,
-  //     );
-  //   }
-  // }
-
-  String getFileExtension(String path) {
-    if (path != "") {
-      final file = File(path);
-      if (file.existsSync()) {
-        return file.path.split('.').last;
-      }
-    }
-    return "nothing";
-  }
-
-  Future<firebase_storage.UploadTask?> uploadFile(File? file) async {
+    Future<firebase_storage.UploadTask?> uploadFile(File? file) async {
     if (file == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Unable to upload ! No file select"),
@@ -96,7 +46,7 @@ class _UploadPageState extends State<UploadPage> {
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
         .ref()
         .child('playground')
-        .child('/${fileNameController.text}');
+        .child('/${widget.file}');
 
     // final metadata = firebase_storage.SettableMetadata(
     //     contentType: 'application/pdf',
@@ -130,11 +80,28 @@ class _UploadPageState extends State<UploadPage> {
       return null;
     }
   }
-
+   String getFileExtension(String path) {
+    if (path != "") {
+      final file = File(path);
+      if (file.existsSync()) {
+        return file.path.split('.').last;
+      }
+    }
+    return "nothing";
+  }
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CourseHome()),
+              );
+            },
+          ),
         iconTheme: const IconThemeData(
           size: 30.0,
           color: primaryColor,
@@ -142,7 +109,7 @@ class _UploadPageState extends State<UploadPage> {
         titleTextStyle: const TextStyle(
             color: primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
         centerTitle: true,
-        title: const Text("Upload Files"),
+        title: const Text("Update File"),
         backgroundColor: mobileBackgroundColor,
       ),
       body: Container(
@@ -157,7 +124,6 @@ class _UploadPageState extends State<UploadPage> {
                 final path = await FlutterDocumentPicker.openDocument();
                 setState(() {
                   if (path != null) {
-                    fileNameController.text = bath.basename(path);
                     extension = getFileExtension(path);
                     file_name = bath.basename(path);
                     file = File(path);
@@ -202,55 +168,14 @@ class _UploadPageState extends State<UploadPage> {
             ),
             const SizedBox(height: 15),
             // fileName(file),
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: TextField(
-                controller: fileNameController,
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "File Name",
-                  hintText: "Enter new File Name",
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "course of : ",
-                  style: TextStyle(
-                      color: Colors.purple,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
-                ),
-                DropdownButton(
-                  // Initial Value
-                  value: dropdownvalue,
+           Text("file name is : $file_name",
+           style: TextStyle(
+            color: Colors.purple,
+            fontWeight: FontWeight.bold,
+            fontSize: 17
 
-                  // Down Arrow Icon
-                  icon: const Icon(Icons.keyboard_arrow_down),
-
-                  // Array list of items
-                  items: items.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  // After selecting the desired option,it will
-                  // change button value to selected value
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownvalue = newValue!;
-                    });
-                  },
-                  style: TextStyle(color: Colors.purple),
-                  dropdownColor: Colors.white,
-                ),
-              ],
-            ),
+           ),
+           ),
             const SizedBox(height: 15),
             ElevatedButton(
               onPressed: () async {
@@ -261,22 +186,15 @@ class _UploadPageState extends State<UploadPage> {
                       .collection("Courses")
                       .doc("allFiles")
                       .collection("Files")
-                      .doc(fileNameController.text)
-                      .set({
-                    "dropdownvalue":dropdownvalue,
-                    "photoUrl":currentUser!.photoUrl,
-                    "username": currentUser!.username,
-                    "file":fileNameController.text,
-                    "uid": user!.uid,
+                      .doc(widget.file)
+                      .update({
                     "fileUrl": downloadUrl,
-                    "timestamp": FieldValue.serverTimestamp(),
                   });
                 }
 
                 setState(() {
-                  file_name = "";
                   file = null;
-                  fileNameController.text = "";
+                  file_name = "";
                 });
               },
               child: Row(
@@ -291,7 +209,7 @@ class _UploadPageState extends State<UploadPage> {
                     width: 15.0,
                   ),
                   Text(
-                    "upload file",
+                    "update file",
                     style: const TextStyle(
                         color: Colors.purple,
                         fontWeight: FontWeight.bold,

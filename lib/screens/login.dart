@@ -17,13 +17,10 @@ class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
   TextEditingController _passwordTextContoller = TextEditingController();
   TextEditingController _emailTextContoller = TextEditingController();
- 
-
-   
 
   signinn() async {
     var formdata = formKey2.currentState;
-            User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
     if (formdata!.validate()) {
       try {
         // ignore: unused_local_variable
@@ -38,10 +35,10 @@ class _LoginPageState extends State<LoginPage> {
             animType: AnimType.scale,
             title: 'Error',
             desc: 'Sorry your email not verified.',
-            btnOkOnPress: () async {    
+            btnOkOnPress: () async {
               await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
             },
           )..show();
         } else {
@@ -122,7 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white70,
                         ),
                         labelText: "Enter Email",
-                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        labelStyle:
+                            TextStyle(color: Colors.white.withOpacity(0.9)),
                         filled: true,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         fillColor: Colors.white.withOpacity(0.3),
@@ -162,7 +160,8 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white70,
                         ),
                         labelText: "Enter Password",
-                        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        labelStyle:
+                            TextStyle(color: Colors.white.withOpacity(0.9)),
                         filled: true,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         fillColor: Colors.white.withOpacity(0.3),

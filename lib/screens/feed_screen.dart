@@ -168,8 +168,8 @@ class _FeedScreenState extends State<FeedScreen> {
               title: Text("Log Out"),
               leading: Icon(Icons.logout_outlined),
               onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.push(context,
+                await FirebaseAuth.instance.signOut();// clears the cache
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },
             ),

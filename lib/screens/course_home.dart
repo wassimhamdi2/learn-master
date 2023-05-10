@@ -19,7 +19,7 @@ class _CourseHomeState extends State<CourseHome> {
   }
 
   Widget buildUploadButton() {
-    bool isprofileOwner = currentUser!.role.toString() == "etudiant";
+    bool isprofileOwner = currentUser!.role.toString() == "enseignant"||currentUser!.role.toString()=="admin";
     if (isprofileOwner) {
       return Padding(
         padding: EdgeInsets.only(top: 16.0, bottom: 8.0),

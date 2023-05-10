@@ -205,6 +205,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection("feedItems")
         .doc(currentUsser?.uid.toString())
         .set({
+      "mediaUrl": "",
+      "commentData": "",
+      "postId": "",
       "type": "follow",
       "ownerId": widget.profileId,
       "username": currentUsser?.username.toString(),
