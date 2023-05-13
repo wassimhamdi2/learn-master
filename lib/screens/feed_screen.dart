@@ -3,14 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/check_if_admin.dart';
 import 'package:learn/screens/course_home.dart';
 import 'package:learn/screens/msg_home.dart';
 import 'package:learn/ultils/colors.dart';
-
 import '../models/post.dart';
 import '../reusable_widgets/Progress.dart';
 import '../ultils/colors_utils.dart';
-import 'Home.dart';
+import 'package:learn/screens/Home.dart';
 import 'login.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -22,6 +22,8 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   bool isLoading = false;
+  String? rolee = '';
+  bool isAdminn = false;
   List<Post> posts = [];
   @override
   void initState() {
@@ -157,18 +159,28 @@ class _FeedScreenState extends State<FeedScreen> {
             ListTile(
               title: Text("Quiz"),
               leading: Icon(Icons.quiz),
-              onTap: () {},
+              onTap: () {
+              },
             ),
             ListTile(
-              title: Text("event"),
+              title: Text("Event"),
               leading: Icon(Icons.event),
-              onTap: () {},
+              onTap: () {
+              },
+            ),
+            ListTile(
+              title: Text("Accounts Managment"),
+              leading: Icon(Icons.manage_accounts),
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => checkIfAdmin()));
+              },
             ),
             ListTile(
               title: Text("Log Out"),
               leading: Icon(Icons.logout_outlined),
               onTap: () async {
-                await FirebaseAuth.instance.signOut();// clears the cache
+                await FirebaseAuth.instance.signOut(); // clears the cache
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },

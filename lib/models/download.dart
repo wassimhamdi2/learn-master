@@ -13,6 +13,7 @@ import '../screens/profile_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class Download extends StatefulWidget {
   final String dropdownvalue;
@@ -123,39 +124,54 @@ class _DownloadState extends State<Download> {
             children: [
               SimpleDialogOption(
                 child: Text("Update Course "),
-                onPressed: (){
-                   Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => courseUpdate(file :file)));
+                onPressed: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => courseUpdate(file: file)));
                 },
               ),
               SimpleDialogOption(
                 child: Text("Delete Course"),
-                onPressed:    () async {
-                  Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => CourseHome()));
-                   try {
-      await FirebaseFirestore.instance
-          .collection("Courses")
-          .doc("allFiles")
-          .collection("Files")
-          .doc(file)
-          .delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Document deleted successfully.'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error deleting document: $e'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      // print('Error deleting document: $e');
-    }},
+                onPressed: () async {
+                  firebase_storage.Reference ref = firebase_storage
+                      .FirebaseStorage.instance
+                      .ref()
+                      .child('playground')
+                      .child('/${file}');
+                  try {
+                    await FirebaseFirestore.instance
+                        .collection("Courses")
+                        .doc("allFiles")
+                        .collection("Files")
+                        .doc(file)
+                        .delete();
+                    try {
+                      await ref.delete();
+                      debugPrint('File deleted successfully.');
+                    } catch (e) {
+                      debugPrint('Error deleting file: $e');
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Document deleted successfully.'),
+                        duration: Duration(seconds: 3),
+                      ),     
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CourseHome()));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error deleting document: $e'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                    // print('Error deleting document: $e');
+                  }
+                },
               ),
               SimpleDialogOption(
                 child: Text("Cancel"),

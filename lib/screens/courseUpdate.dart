@@ -191,6 +191,10 @@ Widget build(BuildContext context) {
                     "fileUrl": downloadUrl,
                   });
                 }
+                Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CourseHome()));
 
                 setState(() {
                   file = null;
