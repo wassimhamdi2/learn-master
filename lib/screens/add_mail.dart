@@ -30,8 +30,9 @@ class _AddMailState extends State<AddMail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       body: Container(
-        color: Colors.grey.withOpacity(0.15),
+        
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -145,6 +146,7 @@ class _AddMailState extends State<AddMail> {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)))),
               ),
+              
             ],
           ),
         ),

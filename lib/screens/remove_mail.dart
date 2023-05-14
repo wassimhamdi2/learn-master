@@ -47,78 +47,76 @@ class _RemoveMailState extends State<RemoveMail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.grey.withOpacity(0.15),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: maill,
-                cursorColor: Colors.grey,
-                // initialValue: '',
-                maxLength: 20,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.mail),
-                  labelText: 'Mail',
-                  labelStyle: TextStyle(
-                    color: Color(0xFF6200EE),
-                  ),
-                  helperText: 'Lettre N°',
-                  // suffixIcon: Icon(
-                  //   Icons.check_circle,
-                  // ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF6200EE)),
-                  ),
+      backgroundColor: Colors.grey.shade200,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: maill,
+              cursorColor: Colors.grey,
+              // initialValue: '',
+              maxLength: 20,
+              decoration: InputDecoration(
+                icon: Icon(Icons.mail),
+                labelText: 'Mail',
+                labelStyle: TextStyle(
+                  color: Color(0xFF6200EE),
+                ),
+                helperText: 'Lettre N°',
+                // suffixIcon: Icon(
+                //   Icons.check_circle,
+                // ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF6200EE)),
                 ),
               ),
-              SizedBox(
-                height: 30,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                deleteDoc();
+                maill.clear();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.delete,
+                    color: Colors.purple,
+                    size: 24.0,
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Text(
+                    " Delete Mail ",
+                    style: const TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  deleteDoc();
-                  maill.clear();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      color: Colors.purple,
-                      size: 24.0,
-                    ),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Text(
-                      " Delete Mail ",
-                      style: const TextStyle(
-                          color: Colors.purple,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                  ],
-                ),
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(200, 50)), // set the minimum size
-                    maximumSize: MaterialStateProperty.all<Size>(
-                        Size(200, 50)), // set the minimum size
-        
-                    backgroundColor: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return Colors.black26;
-                      }
-                      return Colors.white;
-                    }),
-                    shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)))),
-              ),
-            ],
-          ),
+              style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all<Size>(
+                      Size(200, 50)), // set the minimum size
+                  maximumSize: MaterialStateProperty.all<Size>(
+                      Size(200, 50)), // set the minimum size
+      
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.black26;
+                    }
+                    return Colors.white;
+                  }),
+                  shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)))),
+            ),
+          ],
         ),
       ),
     );
