@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:learn/screens/check_if_admin.dart';
 import 'package:learn/screens/course_home.dart';
 import 'package:learn/screens/msg_home.dart';
+import 'package:learn/screens/quiz_home.dart';
 import 'package:learn/ultils/colors.dart';
 import '../models/post.dart';
 import '../reusable_widgets/Progress.dart';
@@ -160,13 +161,14 @@ class _FeedScreenState extends State<FeedScreen> {
               title: Text("Quiz"),
               leading: Icon(Icons.quiz),
               onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => HomeQuiz()));
               },
             ),
             ListTile(
               title: Text("Event"),
               leading: Icon(Icons.event),
-              onTap: () {
-              },
+              onTap: () {},
             ),
             ListTile(
               title: Text("Accounts Managment"),
