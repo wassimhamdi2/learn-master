@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/screens/ask_page.dart';
 import 'package:learn/screens/check_if_admin.dart';
 import 'package:learn/screens/course_home.dart';
 import 'package:learn/screens/msg_home.dart';
@@ -155,7 +156,10 @@ class _FeedScreenState extends State<FeedScreen> {
             ListTile(
               title: Text("Questions"),
               leading: Icon(Icons.question_mark),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => AskMe()));
+              },
             ),
             ListTile(
               title: Text("Quiz"),

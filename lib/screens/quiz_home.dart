@@ -128,6 +128,8 @@ class QuizTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
+        bool isAdmin = currentUser!.role.toString() == "enseignant"||currentUser!.role.toString()=="admin";
+        if (isAdmin){
         showDialog(
             context: context,
             builder: (context) {
@@ -175,6 +177,7 @@ class QuizTile extends StatelessWidget {
                 ],
               );
             });
+      }
       },
       onTap: () {
         Navigator.push(
