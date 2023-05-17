@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:learn/screens/Home.dart';
 import 'package:learn/models/user.dart' as Usser;
+import 'package:learn/screens/quest_comments.dart';
 import '../reusable_widgets/Progress.dart';
 import '../reusable_widgets/custom_image.dart';
 import '../screens/profile_screen.dart';
@@ -92,9 +93,7 @@ class postQuestion extends StatelessWidget {
                         duration: Duration(seconds: 3),
                       ),
                     );
-                    
                   }).show();
-              
             },
             child: Row(children: [
               Icon(
@@ -194,7 +193,7 @@ class postQuestion extends StatelessWidget {
     );
   }
 
-  buildPostFooter() {
+  Widget buildPostFooter(context) {
     return Column(
       children: [
         Row(
@@ -202,7 +201,15 @@ class postQuestion extends StatelessWidget {
           children: [
             Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => CommentsQues(
+                            postId: postId,
+                            postOwnerId: userId,
+                            postMediaUrl: avatarUrl)));
+              },
               // onTap: () => showComments(context,
               //     postId: postId, ownerId: ownerId, mediaUrl: mediaUrl),
               child: Container(
@@ -244,7 +251,7 @@ class postQuestion extends StatelessWidget {
           SizedBox(
             height: 8,
           ),
-          buildPostFooter(),
+          buildPostFooter(context),
         ],
       ),
     );
