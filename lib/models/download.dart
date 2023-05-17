@@ -156,12 +156,10 @@ class _DownloadState extends State<Download> {
                       SnackBar(
                         content: Text('Document deleted successfully.'),
                         duration: Duration(seconds: 3),
-                      ),     
+                      ),
                     );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CourseHome()));
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => CourseHome()));
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

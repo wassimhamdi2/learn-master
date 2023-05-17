@@ -15,6 +15,7 @@ final usersRef = FirebaseFirestore.instance.collection("users");
 final user = UUser.FirebaseAuth.instance.currentUser;
 final Reference storageRef = FirebaseStorage.instance.ref();
 final commentsRef = FirebaseFirestore.instance.collection('comments');
+final postQuestionn = FirebaseFirestore.instance.collection('postQuestion');
 final postsRef = FirebaseFirestore.instance.collection("posts");
 final activityFeedRef = FirebaseFirestore.instance.collection('feed');
 final coursesRef = FirebaseFirestore.instance.collection('Courses');

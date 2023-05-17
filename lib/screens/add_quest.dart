@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learn/models/user.dart';
+import 'package:learn/screens/home.dart';
+import 'package:random_string/random_string.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 final userssRef = FirebaseFirestore.instance.collection("users");
 
@@ -24,7 +28,62 @@ class _AddQuestState extends State<AddQuest> {
   String secondPhotoUrl = "";
   String SecondName = "";
   String SecondRole = "";
+  String postId = "";
+  String downloadUrl = "";
   File? _image = null;
+  TextEditingController postController = TextEditingController();
+
+  Future<String> uploadFile(File file, String Postid) async {
+    firebase_storage.UploadTask uploadTask;
+    // Create a Reference to the file
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('Questions')
+        .child('/imageOf${Postid}');
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text("Uploading..!"),
+    //     backgroundColor: Colors.blue.withOpacity(.8),
+    //     behavior: SnackBarBehavior.floating));
+    // print("Uploading..!");
+    uploadTask = ref.putFile(file);
+    TaskSnapshot storageSnap = await uploadTask.whenComplete(() => null);
+    String url = await storageSnap.ref.getDownloadURL();
+    debugPrint(downloadUrl);
+    //afficher done when upload finish
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text("done"),
+    //     backgroundColor: Colors.blue.withOpacity(.8),
+    //     behavior: SnackBarBehavior.floating));
+    return url;
+  }
+
+  addPost() async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Uploading..!"),
+        backgroundColor: Colors.blue.withOpacity(.8),
+        behavior: SnackBarBehavior.floating));
+    String mediaUrl = "";
+    postId = randomAlphaNumeric(16);
+    if (lastImg != null) {
+      mediaUrl = await uploadFile(lastImg!, postId);
+    } else if (_image != null) {
+      mediaUrl = await uploadFile(_image!, postId);
+    } else {
+      mediaUrl = "";
+    }
+    postQuestionn.doc(postId).set({
+      "postId": postId,
+      "username": SecondName,
+      "post": postController.text,
+      "timestamp": timestamp,
+      "avatarUrl": secondPhotoUrl,
+      "mediaUrl": mediaUrl,
+      "userId": user?.uid
+    });
+
+    postController.clear();
+  }
+
   Widget imageExemple() {
     if (_image != null) {
       return Container(
@@ -128,6 +187,7 @@ class _AddQuestState extends State<AddQuest> {
                   color: Colors.white.withOpacity(0.4),
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    controller: postController,
                     keyboardType: TextInputType.multiline,
                     maxLines: 6,
                     decoration: InputDecoration(
@@ -223,7 +283,14 @@ class _AddQuestState extends State<AddQuest> {
                 imageExemple(),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () async {},
+                  onPressed: () {
+                    addPost();
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("done"),
+                        backgroundColor: Colors.blue.withOpacity(.8),
+                        behavior: SnackBarBehavior.floating));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
