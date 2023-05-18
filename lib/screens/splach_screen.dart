@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:async';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/Home.dart';
@@ -13,18 +14,34 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-User? user;
+  User? user;
+
   @override
   void initState() {
     user = FirebaseAuth.instance.currentUser;
+
     super.initState();
-    Timer(
-        Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    user!=null ? const HomePage() : const LoginPage())));
+    checkConctivity();
+  }
+
+  checkConctivity() async {
+    final resulat = await Connectivity().checkConnectivity();
+    if (resulat == ConnectivityResult.none) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No Network connectin ! check your Network and open the App again'),
+          duration: Duration(seconds: 15),
+        ),
+      );
+    } else {
+      Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      user != null ? const HomePage() : const LoginPage())));
+    }
   }
 
   @override

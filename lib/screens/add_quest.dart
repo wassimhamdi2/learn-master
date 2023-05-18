@@ -284,13 +284,20 @@ class _AddQuestState extends State<AddQuest> {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
+                    if (postController.text.isEmpty){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Please write your Question first"),
+                        backgroundColor: Colors.blue.withOpacity(.8),
+                        behavior: SnackBarBehavior.floating));
+                    }
+                    else{
                     addPost();
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("done"),
                         backgroundColor: Colors.blue.withOpacity(.8),
                         behavior: SnackBarBehavior.floating));
-                  },
+                  }},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

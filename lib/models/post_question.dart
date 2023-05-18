@@ -152,8 +152,9 @@ class postQuestion extends StatelessWidget {
             trailing: IconButton(
               key: _buttonKey,
               onPressed: () {
+                if (userId ==user!.uid){
                 showPopupMenu(context);
-              },
+              }},
               icon: Icon(Icons.more_vert),
             ),
           );
