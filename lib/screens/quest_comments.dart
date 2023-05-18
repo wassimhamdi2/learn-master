@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/models/user.dart' as usser;
+import 'package:learn/screens/profile_screen.dart';
 import 'package:random_string/random_string.dart';
 import '../ultils/colors.dart';
 import 'home.dart';
@@ -202,8 +203,18 @@ class Commentt extends StatelessWidget {
         children: [
           ListTile(
             title: Text(comment),
-            leading: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(avatarUrl),
+            leading: GestureDetector(
+              onTap: (){
+                if (user!.uid != userId) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ProfileScreen(profileId: userId)));
+                }
+              },
+              child: CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(avatarUrl),
+              ),
             ),
             subtitle: Text(timeago.format(timestamp.toDate())),
           )

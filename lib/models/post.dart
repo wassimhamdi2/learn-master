@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/comments.dart';
 import 'package:learn/models/user.dart';
@@ -8,7 +10,6 @@ import 'package:learn/reusable_widgets/Progress.dart';
 import 'package:learn/screens/home.dart';
 import 'package:intl/intl.dart';
 import 'package:learn/screens/profile_screen.dart';
-
 import '../reusable_widgets/custom_image.dart';
 
 class Post extends StatefulWidget {
@@ -102,11 +103,150 @@ class _PostState extends State<Post> {
     currentU = User.fromDocument(doc);
   }
 
+  String SecondName = "";
+  User? currentUer;
   @override
   void initState() {
     getUser();
     super.initState();
     isLiked = likes[currentUserId] == true;
+    getUserr();
+  }
+
+  getUserr() async {
+    DocumentSnapshot doc = await usersRef.doc(ownerId).get();
+    currentUer = User.fromDocument(doc);
+    setState(() {
+      SecondName = currentUer!.username;
+    });
+  }
+
+  Future<void> deletePost() async {
+    // Delete post document from userPosts collection
+    await FirebaseFirestore.instance
+        .collection("posts")
+        .doc(currentUserId)
+        .collection("userPosts")
+        .doc(postId)
+        .delete();
+  }
+
+  Future<void> deleteComment() async {
+    // Delete comments document
+    try {
+       // Get a reference to the comments collection
+    final collectionReference = FirebaseFirestore.instance.collection('comments');
+    // Delete the subcollection associated with the document
+    final subcollectionReference = collectionReference.doc(postId).collection('commentss');
+    final subcollectionSnapshot = await subcollectionReference.get();
+    
+    // Delete each document in the subcollection
+    for (final docSnapshot in subcollectionSnapshot.docs) {
+      await docSnapshot.reference.delete();
+    }
+
+      print('Document deleted successfully');
+      print(postId);
+    } catch (e) {
+      print('Error deleting document: $e');
+      
+    }
+  }
+
+  Future<void> deleteFeed() async {
+// Delete feedItems associated with the post
+    try {
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("feed")
+          .doc(currentUserId)
+          .collection("feedItems")
+          .where('postId', isEqualTo: postId)
+          .get();
+
+      for (final doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      print('Documents deleted successfully!');
+    } catch (e) {
+      print('Error deleting documents: $e');
+    }
+  }
+
+  Future<void> deleteImageFromFirebase(String imageUrl) async {
+    // Get the reference to the Firebase Storage instance
+    final storage = FirebaseStorage.instance;
+
+    // Get the reference to the image file using the imageURL
+    final imageRef = storage.refFromURL(imageUrl);
+
+    try {
+      // Delete the image file from Firebase Storage
+      await imageRef.delete();
+      print('Image deleted successfully');
+    } catch (e) {
+      print('Failed to delete image: $e');
+    }
+  }
+
+  final GlobalKey _buttonKey = GlobalKey();
+  void showPopupMenu(BuildContext context) {
+    final RenderBox buttonBox =
+        _buttonKey.currentContext!.findRenderObject() as RenderBox;
+    final buttonPosition = buttonBox.localToGlobal(Offset.zero);
+
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        buttonPosition.dx,
+        buttonPosition.dy + buttonBox.size.height,
+        buttonPosition.dx + buttonBox.size.width,
+        buttonPosition.dy + buttonBox.size.height * 2,
+      ),
+      items: [
+        PopupMenuItem(
+          value: 'wishList',
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.info,
+                  animType: AnimType.rightSlide,
+                  title: 'Delete Verification',
+                  desc: 'Are u sure to delete the post',
+                  btnCancelOnPress: () {},
+                  btnOkOnPress: () {
+                    deletePost();
+                    deleteFeed();
+                    deleteComment();
+                    deleteImageFromFirebase(mediaUrl);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('post deleted successfully.'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  }).show();
+            },
+            child: Row(children: [
+              Icon(
+                Icons.delete,
+                size: 25.0,
+                color: const Color.fromARGB(255, 255, 17, 0),
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Text(
+                "Delete",
+                style: TextStyle(color: Colors.black),
+              )
+            ]),
+          ),
+        ),
+      ],
+    );
   }
 
   buildPostHeader() {
@@ -127,11 +267,11 @@ class _PostState extends State<Post> {
             ),
             title: GestureDetector(
               onTap: () {
-                if(user.uid !=currentUserId){
+                if (user.uid != currentUserId) {
                   Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => ProfileScreen(profileId : user.uid)));
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ProfileScreen(profileId: user.uid)));
                 }
               },
               child: Text(
@@ -144,7 +284,12 @@ class _PostState extends State<Post> {
             ),
             subtitle: Text("$location \n$formattedDate"),
             trailing: IconButton(
-              onPressed: () => print('deleting post'),
+              key: _buttonKey,
+              onPressed: () {
+                if (ownerId == currentUserId) {
+                  showPopupMenu(context);
+                }
+              },
               icon: Icon(Icons.more_vert),
             ),
           );
@@ -211,7 +356,7 @@ class _PostState extends State<Post> {
       activityFeedRef
           .doc(ownerId)
           .collection("feedItems")
-          .doc(postId)
+          .doc("${postId}_${currentU!.uid}")
           .get()
           .then((doc) {
         if (doc.exists) {
@@ -225,7 +370,11 @@ class _PostState extends State<Post> {
     //add a notification to the postOwner's activity feed only if comment made bvy other user (to avoid getting nptifaction for our own like)
     bool isNotPostOwner = currentUserId != ownerId;
     if (isNotPostOwner) {
-      activityFeedRef.doc(ownerId).collection("feedItems").doc(postId).set({
+      activityFeedRef
+          .doc(ownerId)
+          .collection("feedItems")
+          .doc("${postId}_${currentU!.uid}")
+          .set({
         "type": "like",
         "username": currentU!.username,
         "userId": currentU!.uid,
@@ -285,7 +434,7 @@ class _PostState extends State<Post> {
             Container(
               margin: EdgeInsets.only(left: 20.0),
               child: Text(
-                "$username",
+                "$SecondName",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

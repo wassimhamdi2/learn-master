@@ -31,6 +31,7 @@ class _FeedScreenState extends State<FeedScreen> {
   void initState() {
     super.initState();
     getFollowingPosts();
+    debugPrint(user!.uid);
   }
 
   getFollowingPosts() async {
@@ -175,7 +176,7 @@ class _FeedScreenState extends State<FeedScreen> {
               onTap: () {},
             ),
             ListTile(
-              title: Text("Accounts Managment"),
+              title: Text("E-mails  Managment"),
               leading: Icon(Icons.manage_accounts),
               onTap: () {
                 Navigator.pushReplacement(context,

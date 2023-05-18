@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final String? currentUserId = currentUser?.uid;
   bool isLoading = false;
   bool isFollowing = false;
-  int postCount = 0;
+  int? postCount = 0;
   int followerCount = 0;
   int followingCount = 0;
   List<Post> posts = [];
@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    getProfilePosts();
+    // getProfilePosts();
     getUser();
     checkIfFollowing();
     getFollowers();
@@ -87,6 +87,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
       postCount = snapshot.docs.length;
       posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
     });
+  }
+
+  Widget buildPost() {
+    return StreamBuilder(
+      stream: postsRef
+          .doc(widget.profileId)
+          .collection('userPosts')
+          .orderBy("timestamp", descending: false)
+          .snapshots(),
+      builder: (context, snapshot) {
+        postCount = snapshot.data?.docs.length;
+
+        if (snapshot.data?.docs.length == 0) {
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/img/noPosts.png',
+                  height: 260.0,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Text("No Posts",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 22.0,
+                        )))
+              ],
+            ),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return circularProgress();
+        }
+        List<Post> posts = [];
+        snapshot.data?.docs.forEach((doc) {
+          posts.add(Post.fromDocument(doc));
+          print(posts);
+        });
+        return Column(
+          children: posts,
+        );
+      },
+    );
   }
 
   editProfile() {
@@ -264,7 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            buildCountColumn("post", postCount),
+                            buildCountColumn("post", postCount!),
                             buildCountColumn("followers", followerCount),
                             buildCountColumn("following", followingCount),
                           ],
@@ -329,33 +375,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
   }
 
-  builProfilePosts() {
-    if (isLoading) {
-      return circularProgress();
-    } else if (posts.isEmpty) {
-      return Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/img/noPosts.png',
-              height: 260.0,
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                child: Text("No Posts",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 22.0,
-                    )))
-          ],
-        ),
-      );
-    } else {
-      return Column(children: posts);
-    }
-  }
+  // builProfilePosts() {
+  //   if (isLoading) {
+  //     return circularProgress();
+  //   } else if (posts.isEmpty) {
+  //     return Container(
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Image.asset(
+  //             'assets/img/noPosts.png',
+  //             height: 260.0,
+  //           ),
+  //           Padding(
+  //               padding: EdgeInsets.only(top: 20.0),
+  //               child: Text("No Posts",
+  //                   style: TextStyle(
+  //                     fontWeight: FontWeight.bold,
+  //                     color: Colors.red,
+  //                     fontSize: 22.0,
+  //                   )))
+  //         ],
+  //       ),
+  //     );
+  //   } else {
+  //     return Column(children: posts);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +423,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Divider(
             height: 0.0,
           ),
-          builProfilePosts(),
+          buildPost(),
         ],
       ),
     );
