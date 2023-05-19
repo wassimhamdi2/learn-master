@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/home.dart';
 import '../ultils/colors.dart';
@@ -24,8 +23,8 @@ class _MsgHomeState extends State<MsgHome> {
   // for storing all users
   List<ChatUser> _list = [];
   List<ChatUser> listChat = [];
-  List userchat= ["Uc0KOmqlg8N4xMfjRujST6hcNSs2_BAldnu43GgeyslvyBXguv91ejdh1"];
-  // List<String> userchat = [];
+  // List userchat= ["Uc0KOmqlg8N4xMfjRujST6hcNSs2_BAldnu43GgeyslvyBXguv91ejdh1"];
+  List<String> userchat = [];
 
   // for storing searched items
   final List<ChatUser> _searchList = [];
@@ -34,8 +33,8 @@ class _MsgHomeState extends State<MsgHome> {
 
   @override
   void initState() {
-    super.initState();
     fetchDocumentIds();
+    super.initState();
     APIs.getSelfInfo();
 
     //for updating user active status according to lifecycle events
@@ -57,23 +56,42 @@ class _MsgHomeState extends State<MsgHome> {
     });
   }
 
-  void fetchDocumentIds() async {
-    FirebaseFirestore.instance
-    .collection('chats')
-    .get()
-    .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-            debugPrint(doc.reference.toString());
-        });
+ getDocumentIds() async {
+  List<String> documentIds = [];
+
+  try {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("chats")
+        .get();
+
+    snapshot.docs.forEach((doc) {
+      documentIds.add(doc.id.toString());
+      debugPrint(doc.id);
     });
-//     QuerySnapshot querySnapshot = await APIs.chatsRef.get();
-// setState(() {
-//   userchat = querySnapshot.docs.map((doc) => doc.id).toList();
-// });
-      
-    
+    setState(() {
+      userchat = documentIds;
+    });
+  } catch (e) {
+    print('Error fetching document IDs: $e');
   }
 
+  
+}
+
+  void fetchDocumentIds() {
+  FirebaseFirestore.instance.collection('chats').get().then((snapshot) {
+    if (snapshot != null && snapshot.docs.isNotEmpty) {
+      List<String> documentIds = snapshot.docs.map((doc) => doc.id).toList();
+      // Use the documentIds list as needed
+          setState(() {
+      userchat = documentIds;
+    });
+      print(documentIds);
+    }
+  }).catchError((error) {
+    print('Error getting document IDs: $error');
+  });
+}
   // void fetchDocumentIds() async {
   //   CollectionReference col =
   //       FirebaseFirestore.instance.collection('chats');
@@ -235,15 +253,15 @@ class _MsgHomeState extends State<MsgHome> {
                               [];
                       //fetch user from chat for show it in msg screen  
                       debugPrint("${userchat}");
-                          for (var i in _list) {
-                            for (String j in userchat) {
-                              String id1 = "${user!.uid}_${i.uid}";
-                              String id2 = "${i.uid}_${user!.uid}";
-                              if (id1 == j || id2 == j) {
-                                listChat.add(i);
-                              }
-                            }
-                          }
+                      //     for (var i in _list) {
+                      //       for (String j in userchat) {
+                      //         String id1 = "${user!.uid}_${i.uid}";
+                      //         String id2 = "${i.uid}_${user!.uid}";
+                      //         if (id1 == j || id2 == j) {
+                      //           listChat.add(i);
+                      //         }
+                      //       }
+                      //     }
 
 
                           if (_list.isNotEmpty) {
@@ -251,14 +269,14 @@ class _MsgHomeState extends State<MsgHome> {
                             return ListView.builder(
                                 itemCount: _isSearching
                                     ? _searchList.length
-                                    : listChat.length,
+                                    : _list.length,
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   return ChatUserCard(
                                       user: _isSearching
                                           ? _searchList[index]
-                                          : listChat[index]);
+                                          : _list[index]);
                                 });
                           } else {
                             return const Center(
