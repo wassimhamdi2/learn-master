@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/ask_page.dart';
 import 'package:learn/screens/check_if_admin.dart';
 import 'package:learn/screens/course_home.dart';
+import 'package:learn/screens/event_home.dart';
 import 'package:learn/screens/msg_home.dart';
 import 'package:learn/screens/quiz_home.dart';
 import 'package:learn/ultils/colors.dart';
@@ -173,7 +173,10 @@ class _FeedScreenState extends State<FeedScreen> {
             ListTile(
               title: Text("Event"),
               leading: Icon(Icons.event),
-              onTap: () {},
+              onTap: () {
+                 Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => EventHome()));
+              },
             ),
             ListTile(
               title: Text("E-mails  Managment"),
