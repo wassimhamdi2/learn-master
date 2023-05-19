@@ -17,6 +17,15 @@ class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
   TextEditingController _passwordTextContoller = TextEditingController();
   TextEditingController _emailTextContoller = TextEditingController();
+  @override
+  void initState() {
+    User? user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+    super.initState();
+    
+  }
+
+
 
   signinn() async {
     var formdata = formKey2.currentState;
@@ -46,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               context, MaterialPageRoute(builder: (context) => HomePage()));
         }
         print("sign in");
+        // print(user!.uid);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           AwesomeDialog(
