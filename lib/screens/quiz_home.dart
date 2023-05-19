@@ -196,7 +196,7 @@ class QuizTile extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
               ),
               Container(
-                color: Colors.black26,
+                color: Colors.black45,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
