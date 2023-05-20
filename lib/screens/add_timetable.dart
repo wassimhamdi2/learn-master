@@ -1,7 +1,12 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:random_string/random_string.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import 'home.dart';
 
 class AddTimeTable extends StatefulWidget {
   const AddTimeTable({super.key});
@@ -21,6 +26,52 @@ class _AddTimeTableState extends State<AddTimeTable> {
 
   File? file;
   String file_name = "";
+  String postId = "";
+
+  Future<String> uploadFile(File file, String Postid) async {
+    firebase_storage.UploadTask uploadTask;
+    // Create a Reference to the file
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('Event')
+        .child('/imageOf${Postid}');
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text("Uploading..!"),
+    //     backgroundColor: Colors.blue.withOpacity(.8),
+    //     behavior: SnackBarBehavior.floating));
+    // print("Uploading..!");
+    uploadTask = ref.putFile(file);
+    TaskSnapshot storageSnap = await uploadTask.whenComplete(() => null);
+    String url = await storageSnap.ref.getDownloadURL();
+    //afficher done when upload finish
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text("done"),
+    //     backgroundColor: Colors.blue.withOpacity(.8),
+    //     behavior: SnackBarBehavior.floating));
+    return url;
+  }
+
+  postTimetable() async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Uploading..!"),
+        backgroundColor: Colors.blue.withOpacity(.8),
+        behavior: SnackBarBehavior.floating));
+    String mediaUrl = "";
+    postId = randomAlphaNumeric(16);
+
+    mediaUrl = await uploadFile(file!, postId);
+    eventRef.doc("timetable").collection("allFiles").doc(postId).set({
+      "postId": postId,
+      "mediaUrl": mediaUrl,
+      "section": _selectedSection,
+      "class": _selectedClass,
+    });
+
+    setState(() {
+      file_name = '';
+      file = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,13 +275,32 @@ class _AddTimeTableState extends State<AddTimeTable> {
             ],
           ),
         ),
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             ElevatedButton(
-              onPressed: () async {
-              
+            ElevatedButton(
+              onPressed: () {
+                if (file == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("No File !! select file please "),
+                      backgroundColor: Colors.blue.withOpacity(.8),
+                      behavior: SnackBarBehavior.floating));
+                } else if (_selectedSection == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select Class please "),
+                      backgroundColor: Colors.blue.withOpacity(.8),
+                      behavior: SnackBarBehavior.floating));
+                } else if (_selectedClass == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select Class please"),
+                      backgroundColor: Colors.blue.withOpacity(.8),
+                      behavior: SnackBarBehavior.floating));
+                } else {
+                  postTimetable();
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -268,7 +338,8 @@ class _AddTimeTableState extends State<AddTimeTable> {
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)))),
             ),
-        ],)
+          ],
+        )
       ]),
     );
   }

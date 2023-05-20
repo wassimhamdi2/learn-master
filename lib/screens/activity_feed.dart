@@ -68,7 +68,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
             if (data.length == 0) {
               return Center(
                 child: Text(
-                  "No Feed  Yet",
+                  "No Feed Yet",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
                 ),
               );
