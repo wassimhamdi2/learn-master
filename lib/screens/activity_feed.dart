@@ -39,7 +39,6 @@ class _ActivityFeedState extends State<ActivityFeed> {
     List<ActivityFeedItem> feedItems = [];
     snapshot.docs.forEach((doc) {
       feedItems.add(ActivityFeedItem.fromDocument(doc));
-
     });
     return feedItems;
   }
@@ -48,6 +47,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(color: Colors.purple),
         titleTextStyle: TextStyle(
             color: primaryColor, fontWeight: FontWeight.bold, fontSize: 18),
@@ -62,6 +62,16 @@ class _ActivityFeedState extends State<ActivityFeed> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return circularProgress();
+            }
+            final List<dynamic> data =
+                snapshot.data as List<dynamic>; // Cast to List<dynamic>
+            if (data.length == 0) {
+              return Center(
+                child: Text(
+                  "No Feed  Yet",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+                ),
+              );
             }
             return ListView(children: snapshot.data as List<Widget>);
           },
@@ -109,10 +119,11 @@ class ActivityFeedItem extends StatelessWidget {
   }
 
   showPost(context) {
-    Navigator.push(context,MaterialPageRoute(builder: (Context) =>
-    PostScreen(postId: postId ,userId: user!.uid)
-    
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (Context) =>
+                PostScreen(postId: postId, userId: user!.uid)));
   }
 
   configureMediaPreview(context) {
@@ -183,7 +194,9 @@ class ActivityFeedItem extends StatelessWidget {
   }
 }
 
-showProfile(BuildContext context , {required String profileId}) {
-  Navigator.push(context, MaterialPageRoute(builder: (context)=>
-  ProfileScreen(profileId : profileId)));
+showProfile(BuildContext context, {required String profileId}) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ProfileScreen(profileId: profileId)));
 }
