@@ -33,7 +33,7 @@ class _MsgHomeState extends State<MsgHome> {
 
   @override
   void initState() {
-    fetchDocumentIds();
+    // fetchDocumentIds();
     super.initState();
     APIs.getSelfInfo();
 
@@ -78,50 +78,21 @@ class _MsgHomeState extends State<MsgHome> {
   
 }
 
-  void fetchDocumentIds() {
-  FirebaseFirestore.instance.collection('chats').get().then((snapshot) {
-    if (snapshot != null && snapshot.docs.isNotEmpty) {
-      List<String> documentIds = snapshot.docs.map((doc) => doc.id).toList();
-      // Use the documentIds list as needed
-          setState(() {
-      userchat = documentIds;
-    });
-      print(documentIds);
-    }
-  }).catchError((error) {
-    print('Error getting document IDs: $error');
-  });
-}
-  // void fetchDocumentIds() async {
-  //   CollectionReference col =
-  //       FirebaseFirestore.instance.collection('chats');
-  //   QuerySnapshot querySnapshot = await col.get();
-
-  //   List<String> documentIds = [];
-
-  //   querySnapshot.docs.forEach((doc) {
-  //     documentIds.add(doc.id);
-  //   });
-  //     for (String i in documentIds) {
-  //       userchat.add(i);
-  //     }
-  //   log("${userchat.isEmpty}");
-  // }
-
-  // void listUserChat() {
-  //   for (var i in _list) {
-  //     for (var j in userchat) {
-  //       String id1 = "${user!.uid}_${i.uid}";
-  //       String id2 = "${i.uid}_${user!.uid}";
-  //       if (id1 == j || id2 == j) {
+  // void fetchDocumentIds() {
+  // FirebaseFirestore.instance.collection('chats').get().then((snapshot) {
+  //   if (snapshot != null && snapshot.docs.isNotEmpty) {
+  //     List<String> documentIds = snapshot.docs.map((doc) => doc.id).toList();
+  //     // Use the documentIds list as needed
   //         setState(() {
-  //           listChat.add(i);
-  //         });
-
-  //       }
-  //     }
+  //     userchat = documentIds;
+  //   });
+  //     print(documentIds);
   //   }
-  // }
+  // }).catchError((error) {
+  //   print('Error getting document IDs: $error');
+  // });
+// }
+  
 
   @override
   Widget build(BuildContext context) {

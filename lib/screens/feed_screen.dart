@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:learn/screens/ask_page.dart';
 import 'package:learn/screens/check_if_admin.dart';
 import 'package:learn/screens/course_home.dart';
@@ -33,7 +34,9 @@ class _FeedScreenState extends State<FeedScreen> {
     getFollowingPosts();
     debugPrint(user!.uid);
   }
-
+void restartApp() {
+    SystemNavigator.pop();
+  }
   getFollowingPosts() async {
     setState(() {
       isLoading = true;
@@ -190,9 +193,11 @@ class _FeedScreenState extends State<FeedScreen> {
               title: Text("Log Out"),
               leading: Icon(Icons.logout_outlined),
               onTap: () async {
-                await FirebaseAuth.instance.signOut(); // clears the cache
+                await FirebaseAuth.instance.signOut();
+                // restartApp() ;
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
+                    
               },
             ),
           ],
