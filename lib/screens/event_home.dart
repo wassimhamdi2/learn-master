@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/screens/add_event.dart';
+import 'package:learn/screens/test_page.dart';
+import 'package:learn/screens/timetable_page.dart';
+import 'package:learn/screens/training_page.dart';
 
 import '../models/user.dart' as usser;
 import '../ultils/colors.dart';
@@ -74,138 +77,166 @@ class _EventHomeState extends State<EventHome> {
       ),
       body: ListView(
         children: [
-          SizedBox(height: 50,),
-          Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        height: 150,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Stack(
-            children: [
-              Image.asset(
-                'assets/img/timetable.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-              ),
-              Container(
-                color: Colors.black45,
-                child:  Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'timetable',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        'it is the time for improve yourself wake up ',
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white.withOpacity(0.7),
-                            fontWeight: FontWeight.w500),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
+          SizedBox(
+            height: 50,
           ),
-        ),
-      ),
-      SizedBox(height: 20,),
-          Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        height: 150,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Stack(
-            children: [
-              Image.asset(
-                'assets/img/test.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-              ),
-              Container(
-                color: Colors.black45,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'test time',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TimetablePage()));
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              height: 150,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      'assets/img/timetable.png',
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Container(
+                      color: Colors.black45,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'timetable',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              'it is the time for improve yourself wake up ',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
                       ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        'dont give up and you will success',
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-      SizedBox(height: 20,),
-          Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        height: 150,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Stack(
-            children: [
-              Image.asset(
-                'assets/img/training.png',
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
               ),
-              Container(
-                color: Colors.black45,
-                child: const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'training time',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        'time for best training in various fields ',
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-      ),
+          SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TestPage()),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              height: 150,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      'assets/img/test.png',
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Container(
+                      color: Colors.black45,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'test time',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              'dont give up and you will success',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TrainingPage()),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              height: 150,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      'assets/img/training.png',
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Container(
+                      color: Colors.black45,
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'training time',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              'time for best training in various fields ',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

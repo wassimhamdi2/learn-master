@@ -119,7 +119,13 @@ void restartApp() {
             backgroundColor: mobileBackgroundColor,
             iconTheme: IconThemeData(color: Colors.purple),
             centerTitle: true,
-            actions: [IconButton(icon: Icon(Icons.send), onPressed: chat)],
+            actions: [
+            IconButton(icon: Icon(Icons.refresh), onPressed: (){
+              Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+            }),
+              IconButton(icon: Icon(Icons.send), onPressed: chat),
+            ],
             title: Image.asset(
               'assets/img/Learn_me_c.png',
               height: 50,

@@ -18,10 +18,14 @@ class AddTimeTable extends StatefulWidget {
 class _AddTimeTableState extends State<AddTimeTable> {
   // define a list of options for the dropdown
   final List<String> _class = ["LSI1", "LSI2", "LS3", "M1", "M2"];
-  final List<String> _Section = ["IM", "GL"];
+  final List<String> _Section = ["IM", "GL", "-"];
+  final List<String> _TD = ["TD1", "TD2", "TD3", "TD4"];
+  final List<String> _TP = ["TP1", "TP2", "TP3", "TP4"];
 
   // the selected value
   String? _selectedClass;
+  String? _selectedTD;
+  String? _selectedTP;
   String? _selectedSection;
 
   File? file;
@@ -64,7 +68,9 @@ class _AddTimeTableState extends State<AddTimeTable> {
       "postId": postId,
       "mediaUrl": mediaUrl,
       "section": _selectedSection,
-      "class": _selectedClass,
+      "classs": _selectedClass,
+      "td": _selectedTD,
+      "tp": _selectedTP,
     });
 
     setState(() {
@@ -128,6 +134,136 @@ class _AddTimeTableState extends State<AddTimeTable> {
 
                 // Customize the selected item
                 selectedItemBuilder: (BuildContext context) => _class
+                    .map((e) => Center(
+                          child: Text(
+                            e,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.amber,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              width: 300,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(30)),
+              child: DropdownButton<String>(
+                value: _selectedTD,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedTD = value;
+                  });
+                },
+                hint: const Center(
+                    child: Text(
+                  'Select the TD',
+                  style: TextStyle(color: Colors.white),
+                )),
+                // Hide the default underline
+                underline: Container(),
+                // set the color of the dropdown menu
+                dropdownColor: Colors.amber,
+                icon: const Icon(
+                  Icons.arrow_downward,
+                  color: Colors.yellow,
+                ),
+                isExpanded: true,
+
+                // The list of options
+                items: _TD
+                    .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              e,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+
+                // Customize the selected item
+                selectedItemBuilder: (BuildContext context) => _TD
+                    .map((e) => Center(
+                          child: Text(
+                            e,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.amber,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              width: 300,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(30)),
+              child: DropdownButton<String>(
+                value: _selectedTP,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedTP = value;
+                  });
+                },
+                hint: const Center(
+                    child: Text(
+                  'Select the TP',
+                  style: TextStyle(color: Colors.white),
+                )),
+                // Hide the default underline
+                underline: Container(),
+                // set the color of the dropdown menu
+                dropdownColor: Colors.amber,
+                icon: const Icon(
+                  Icons.arrow_downward,
+                  color: Colors.yellow,
+                ),
+                isExpanded: true,
+
+                // The list of options
+                items: _TP
+                    .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              e,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+
+                // Customize the selected item
+                selectedItemBuilder: (BuildContext context) => _TP
                     .map((e) => Center(
                           child: Text(
                             e,
@@ -286,20 +422,40 @@ class _AddTimeTableState extends State<AddTimeTable> {
                 if (file == null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("No File !! select file please "),
-                      backgroundColor: Colors.blue.withOpacity(.8),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
                       behavior: SnackBarBehavior.floating));
-                } else if (_selectedSection == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Select Class please "),
-                      backgroundColor: Colors.blue.withOpacity(.8),
+                  // debugPrint("not file bro");
+                }
+                 else if (_selectedSection == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select Section please "),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
+                      behavior: SnackBarBehavior.floating));}
+                 else if (_selectedClass == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select class please"),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
                       behavior: SnackBarBehavior.floating));
-                } else if (_selectedClass == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Select Class please"),
-                      backgroundColor: Colors.blue.withOpacity(.8),
+                } 
+                 else if (_selectedTD == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select TD please"),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
                       behavior: SnackBarBehavior.floating));
-                } else {
+                } 
+                 else if (_selectedTP == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Select TP please"),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
+                      behavior: SnackBarBehavior.floating));
+                } 
+                else {
                   postTimetable();
+                  //afficher done when upload finish
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("done"),
+                      backgroundColor: Colors.blue.withOpacity(0.8),
+                      behavior: SnackBarBehavior.floating));
                 }
               },
               child: Row(

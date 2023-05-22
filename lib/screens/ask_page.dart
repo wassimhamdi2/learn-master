@@ -41,25 +41,25 @@ class _AskMeState extends State<AskMe> {
       stream: postQuestionn.orderBy("timestamp", descending: false).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.data?.docs.length == 0) {
-         return Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/img/noPosts.png',
-              height: 260.0,
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/img/noPosts.png',
+                  height: 260.0,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Text("No Posts",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 22.0,
+                        )))
+              ],
             ),
-            Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                child: Text("No Posts",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 22.0,
-                    )))
-          ],
-        ),
-      );
+          );
         }
         List<postQuestion> postsQues = [];
         snapshot.data?.docs.forEach((doc) {
@@ -97,8 +97,7 @@ class _AskMeState extends State<AskMe> {
         title: Text("Ask Question"),
         backgroundColor: mobileBackgroundColor,
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: ListView(
           children: [
             Card(
               margin: EdgeInsets.only(top: 5),
@@ -153,7 +152,8 @@ class _AskMeState extends State<AskMe> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                final pickedFile = await ImagePicker().pickImage(
+                                final pickedFile =
+                                    await ImagePicker().pickImage(
                                   source: ImageSource.camera,
                                   maxHeight: 675,
                                   maxWidth: 960,
@@ -196,7 +196,8 @@ class _AskMeState extends State<AskMe> {
                             const VerticalDivider(width: 8.0, thickness: 1),
                             GestureDetector(
                               onTap: () async {
-                                final pickedFile = await ImagePicker().pickImage(
+                                final pickedFile =
+                                    await ImagePicker().pickImage(
                                   source: ImageSource.gallery,
                                 );
                                 setState(() {
@@ -248,7 +249,6 @@ class _AskMeState extends State<AskMe> {
             postQues(),
           ],
         ),
-      ),
     );
   }
 }
