@@ -315,7 +315,10 @@ class APIs {
     //message sending time (also used as id)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     log("$chatUser");
-
+final reff = firestore
+        .collection('chats');
+    await reff.doc(getConversationID(chatUser.uid)).
+    set({"vide":"vide"});
     //message to send
     final Message message = Message(
         toId: chatUser.uid.toString(),

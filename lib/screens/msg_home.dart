@@ -33,7 +33,7 @@ class _MsgHomeState extends State<MsgHome> {
 
   @override
   void initState() {
-    // fetchDocumentIds();
+    fetchDocumentIds();
     super.initState();
     APIs.getSelfInfo();
 
@@ -78,20 +78,20 @@ class _MsgHomeState extends State<MsgHome> {
   
 }
 
-  // void fetchDocumentIds() {
-  // FirebaseFirestore.instance.collection('chats').get().then((snapshot) {
-  //   if (snapshot != null && snapshot.docs.isNotEmpty) {
-  //     List<String> documentIds = snapshot.docs.map((doc) => doc.id).toList();
-  //     // Use the documentIds list as needed
-  //         setState(() {
-  //     userchat = documentIds;
-  //   });
-  //     print(documentIds);
-  //   }
-  // }).catchError((error) {
-  //   print('Error getting document IDs: $error');
-  // });
-// }
+  void fetchDocumentIds() {
+  FirebaseFirestore.instance.collection('chats').get().then((snapshot) {
+    if (snapshot != null && snapshot.docs.isNotEmpty) {
+      List<String> documentIds = snapshot.docs.map((doc) => doc.id).toList();
+      // Use the documentIds list as needed
+          setState(() {
+      userchat = documentIds;
+    });
+      print(documentIds);
+    }
+  }).catchError((error) {
+    print('Error getting document IDs: $error');
+  });
+}
   
 
   @override
@@ -224,15 +224,15 @@ class _MsgHomeState extends State<MsgHome> {
                               [];
                       //fetch user from chat for show it in msg screen  
                       debugPrint("${userchat}");
-                      //     for (var i in _list) {
-                      //       for (String j in userchat) {
-                      //         String id1 = "${user!.uid}_${i.uid}";
-                      //         String id2 = "${i.uid}_${user!.uid}";
-                      //         if (id1 == j || id2 == j) {
-                      //           listChat.add(i);
-                      //         }
-                      //       }
-                      //     }
+                          for (var i in _list) {
+                            for (String j in userchat) {
+                              String id1 = "${user!.uid}_${i.uid}";
+                              String id2 = "${i.uid}_${user!.uid}";
+                              if (id1 == j || id2 == j) {
+                                listChat.add(i);
+                              }
+                            }
+                          }
 
 
                           if (_list.isNotEmpty) {
@@ -240,14 +240,14 @@ class _MsgHomeState extends State<MsgHome> {
                             return ListView.builder(
                                 itemCount: _isSearching
                                     ? _searchList.length
-                                    : _list.length,
+                                    : listChat.length,
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   return ChatUserCard(
                                       user: _isSearching
                                           ? _searchList[index]
-                                          : _list[index]);
+                                          : listChat[index]);
                                 });
                           } else {
                             return const Center(
