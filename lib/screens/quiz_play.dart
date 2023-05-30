@@ -243,7 +243,7 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
                     optionSelected = widget.questionModel.option1;
                     widget.questionModel.answered = true;
                     _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
+                    _notAttempted = _notAttempted - 1;
                   });
                 } else {
                   setState(() {
@@ -275,7 +275,7 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
                     optionSelected = widget.questionModel.option2;
                     widget.questionModel.answered = true;
                     _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
+                    _notAttempted = _notAttempted - 1;
                   });
                 } else {
                   setState(() {
@@ -307,7 +307,7 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
                     optionSelected = widget.questionModel.option3;
                     widget.questionModel.answered = true;
                     _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
+                    _notAttempted = _notAttempted - 1;
                   });
                 } else {
                   setState(() {
@@ -339,7 +339,7 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
                     optionSelected = widget.questionModel.option4;
                     widget.questionModel.answered = true;
                     _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
+                    _notAttempted = _notAttempted - 1;
                   });
                 } else {
                   setState(() {
